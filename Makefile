@@ -9,19 +9,24 @@ LIB_DIR         = lib
 BUILD_NAME      = dynamical
 BUILD_PRODUCT   = $(BUILD_DIR)/$(BUILD_NAME)
 
-C_SOURCE        = main.cpp
+C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp
 STATIC_LIBS     = libglfw3.a
 FRAMEWORKS      = Cocoa OpenGL IOKit CoreVideo
 OBJECTS         = $(C_SOURCE:%.cpp=$(OBJECT_DIR)/%.o)
 
 COMPILER        = clang++
-COMPILE_OPTIONS = -Wall -Wextra 
+COMPILE_OPTIONS = -Wall -Wextra -pedantic
 LINK_OPTIONS    = -Wall -Wextra $(FRAMEWORKS:%=-framework %)
 
 COMPILE_CMD = $(COMPILER) $(COMPILE_OPTIONS)
 LINK_CMD    = $(COMPILER) $(LINK_OPTIONS)
 
 all: $(BUILD_PRODUCT)
+
+again: clean $(BUILD_PRODUCT)
+
+run: $(BUILD_PRODUCT)
+	./$(BUILD_PRODUCT)
 
 $(BUILD_PRODUCT): $(OBJECTS)
 	$(LINK_CMD) -o $@ $(OBJECTS) $(STATIC_LIBS:%=$(LIB_DIR)/%)
