@@ -3,13 +3,15 @@
 # Matthew Jee
 # mcjee@ucsc.edu
 
+INCLUDEDEPS = ${filter clean,${MAKECMDGOALS}}
+
 OBJECT_DIR      = objects
 BUILD_DIR       = build
 LIB_DIR         = lib
 BUILD_NAME      = dynamical
 BUILD_PRODUCT   = $(BUILD_DIR)/$(BUILD_NAME)
 
-C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp
+C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp matrix.cpp
 STATIC_LIBS     = libglfw3.a
 FRAMEWORKS      = Cocoa OpenGL IOKit CoreVideo
 OBJECTS         = $(C_SOURCE:%.cpp=$(OBJECT_DIR)/%.o)
@@ -36,3 +38,10 @@ $(OBJECT_DIR)/%.o: %.cpp
 
 clean:
 	- rm $(OBJECTS) $(BUILD_PRODUCT)
+
+dependencies:
+	$(COMPILER) -MM $(C_SOURCE) > dependencies
+
+ifeq "$(NEEDS_DEPENDENCIES)" ""
+include dependencies
+endif
