@@ -1,7 +1,8 @@
 /*
-    mjvector.h
-    Matthew Jee
-    mcjee@ucsc.edu
+ vector.h
+ Dynamical
+ Matthew Jee
+ mcjee@ucsc.edu
 */
 
 #ifndef MJ_VECTOR_H

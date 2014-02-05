@@ -11,7 +11,7 @@ LIB_DIR         = lib
 BUILD_NAME      = dynamical
 BUILD_PRODUCT   = $(BUILD_DIR)/$(BUILD_NAME)
 
-C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp matrix.cpp
+C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp matrix.cpp camera.cpp shader.cpp
 STATIC_LIBS     = libglfw3.a
 FRAMEWORKS      = Cocoa OpenGL IOKit CoreVideo
 OBJECTS         = $(C_SOURCE:%.cpp=$(OBJECT_DIR)/%.o)
