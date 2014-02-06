@@ -8,7 +8,7 @@
 #ifndef MJ_SHADER_H
 #define MJ_SHADER_H
 
-#include "GLFW/glfw3.h"
+#include "definitions.h"
 #include <iostream>
 #include <string>
 #include <stdexcept>

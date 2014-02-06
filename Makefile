@@ -10,8 +10,11 @@ BUILD_DIR       = build
 LIB_DIR         = lib
 BUILD_NAME      = dynamical
 BUILD_PRODUCT   = $(BUILD_DIR)/$(BUILD_NAME)
+BUNDLE          = $(BUILD_DIR)/$(BUILD_NAME).app
 
-C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp matrix.cpp camera.cpp shader.cpp
+C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp\
+                  matrix.cpp camera.cpp shader.cpp geometry.cpp renderable.cpp \
+                  scene.cpp framebuffer.cpp texture.cpp
 STATIC_LIBS     = libglfw3.a
 FRAMEWORKS      = Cocoa OpenGL IOKit CoreVideo
 OBJECTS         = $(C_SOURCE:%.cpp=$(OBJECT_DIR)/%.o)
@@ -28,7 +31,22 @@ all: $(BUILD_PRODUCT)
 again: clean $(BUILD_PRODUCT)
 
 run: $(BUILD_PRODUCT)
+	cp -r shaders/ $(BUILD_DIR)/shaders/
 	./$(BUILD_PRODUCT)
+
+bundle: $(BUNDLE)
+
+$(BUNDLE): $(BUILD_PRODUCT)
+	mkdir $(BUNDLE)
+	mkdir $(BUNDLE)/Contents
+	mkdir $(BUNDLE)/Contents/MacOS
+	mkdir $(BUNDLE)/Contents/Resources
+	mkdir $(BUNDLE)/Contents/Resources/shaders
+	cp shaders/* $(BUNDLE)/Contents/Resources/shaders/
+	cp $(BUILD_PRODUCT) $(BUNDLE)/Contents/MacOS
+
+runbundle: $(BUNDLE)
+	open $(BUNDLE)
 
 $(BUILD_PRODUCT): $(OBJECTS)
 	$(LINK_CMD) -o $@ $(OBJECTS) $(STATIC_LIBS:%=$(LIB_DIR)/%)
@@ -37,7 +55,8 @@ $(OBJECT_DIR)/%.o: %.cpp
 	$(COMPILE_CMD) -o $@ -c $<
 
 clean:
-	- rm $(OBJECTS) $(BUILD_PRODUCT)
+	- rm $(OBJECTS) $(BUILD_PRODUCT) $(BUNDLE)
+	- rm $(BUILD_DIR)/shaders/*
 
 dependencies:
 	$(COMPILER) -MM $(C_SOURCE) > dependencies

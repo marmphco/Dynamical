@@ -7,6 +7,18 @@
 
 #ifndef DYNAM_DEFINITIONS_H
 #define DYNAM_DEFINITIONS_H
+ 
+#define _USE_MATH_DEFINES
+#define GLFW_INCLUDE_GLCOREARB
+#ifdef __APPLE__
+#   include "GLFW/glfw3.h"
+//#   define glGenVertexArrays glGenVertexArraysAPPLE
+//#   define glBindVertexArray glBindVertexArrayAPPLE
+//#   define glDeleteVertexArrays glDeleteVertexArraysAPPLE
+#else
+#   include "libglew/glew.h"
+#   include "GLFW/glfw3.h"
+#endif
 
 #include <vector>
 #include <string>
