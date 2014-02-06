@@ -39,6 +39,7 @@ namespace dynam {
             framebuffer->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
         framebuffer->bind();
+        glViewport(0, 0, framebuffer->width(), framebuffer->height());
         if (blendEnabled) {
             glEnable(GL_BLEND);
             glBlendEquationSeparate(blendEquationRGB, blendEquationA);

@@ -1,33 +1,32 @@
 /*
- geometry.h
+ mesh.h
  Dynamical
  Matthew Jee
  mcjee@ucsc.edu
 */
 
-#ifndef MJ_GEOMETRY_H
-#define MJ_GEOMETRY_H
+#ifndef MJ_MESH_H
+#define MJ_MESH_H
 
-//#include "mjutil.h"
 #include "definitions.h"
 #include "vector.h"
 
 namespace dynam {
 
-class Geometry {
+class Mesh {
 private:
     int indexCount;
     GLuint vertexBufferObject;
     GLuint indexBufferObject;
 
 public:
-    Geometry();
-    Geometry(GLfloat *vertexData,
+    Mesh();
+    Mesh(GLfloat *vertexData,
              GLuint *indexData,
              int vertexCount,
              int indexCount,
              int vertexElements);
-    ~Geometry();
+    ~Mesh();
 
     void modifyData(GLfloat *vertexData,
                     GLuint *indexData,

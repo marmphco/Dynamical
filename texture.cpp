@@ -68,21 +68,35 @@ Texture2D::Texture2D(GLint internalFormat, GLenum format, GLenum type,
 }
 
 void Texture2D::present(Shader *shader) {
+    // One shared mesh for all texture presentation
+    static GLuint vao, vbo;
+    if (!glIsBuffer(vao)) {
+        GLfloat vertices[] = {
+            -1.0, -1.0, 0.0,
+            1.0, -1.0, 0.0,
+            -1.0, 1.0, 0.0,
+            1.0, 1.0, 0.0,
+        };
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        glGenBuffers(1, &vbo);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, 48, vertices, GL_STATIC_DRAW);
+        GLint loc = shader->getAttribLocation("vPosition");
+        glEnableVertexAttribArray(loc);
+        glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBlendFunc(GL_ONE, GL_ZERO);
-    GLfloat vertices[] = {
-        -1.0, -1.0, 0.0,
-        1.0, -1.0, 0.0,
-        -1.0, 1.0, 0.0,
-        1.0, 1.0, 0.0,
-    };
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(vao);
+
     shader->use();
+    GLint texLoc = shader->getUniformLocation("texture0");
+    glUniform1i(texLoc, 0);
     bindToUnit(GL_TEXTURE0);
-    GLint loc = shader->getAttribLocation("vPosition");
-    glEnableVertexAttribArray(loc);
-    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, vertices);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     unbind();
 }

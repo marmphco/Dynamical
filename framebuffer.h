@@ -36,6 +36,9 @@ public:
     void bind();
     void unbind();
 
+    int width();
+    int height();
+
     void clear(GLbitfield mask);
 };
 

@@ -4,10 +4,10 @@
     mcjee@ucsc.edu
 */
 
-#version 120
+#version 150
 
-varying vec4 fPosition;
-attribute vec4 vPosition;
+out vec4 fPosition;
+in vec4 vPosition;
 
 uniform float aspectRatio; //cuts off and letterboxes x axis
 

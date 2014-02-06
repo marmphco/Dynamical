@@ -1,24 +1,24 @@
 /*
- geometry.cpp
+ mesh.cpp
  Dynamical
  Matthew Jee
  mcjee@ucsc.edu
 */
 
-#include "geometry.h"
+#include "mesh.h"
 
 namespace dynam {
 
-Geometry::~Geometry() {
+Mesh::~Mesh() {
     glDeleteBuffers(2, &vertexBufferObject);
 }
 
-Geometry::Geometry() {
+Mesh::Mesh() {
     glGenBuffers(2, &vertexBufferObject);
     //empty geometry object
 }
 
-Geometry::Geometry(GLfloat *vertexData,
+Mesh::Mesh(GLfloat *vertexData,
                    GLuint *indexData,
                    int vertexCount,
                    int indexCounti,
@@ -29,7 +29,7 @@ Geometry::Geometry(GLfloat *vertexData,
     modifyData(vertexData, indexData, vertexCount, indexCount, vertexElements);
 }
 
-void Geometry::modifyData(GLfloat *vertexData,
+void Mesh::modifyData(GLfloat *vertexData,
                           GLuint *indexData,
                           int vertexCount,
                           int indexCounti,
@@ -47,17 +47,17 @@ void Geometry::modifyData(GLfloat *vertexData,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Geometry::bind(void) {
+void Mesh::bind(void) {
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 }
 
-void Geometry::unbind(void) {
+void Mesh::unbind(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-int Geometry::elementCount(void) {
+int Mesh::elementCount(void) {
     return indexCount;
 }
 

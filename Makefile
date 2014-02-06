@@ -13,7 +13,7 @@ BUILD_PRODUCT   = $(BUILD_DIR)/$(BUILD_NAME)
 BUNDLE          = $(BUILD_DIR)/$(BUILD_NAME).app
 
 C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp\
-                  matrix.cpp camera.cpp shader.cpp geometry.cpp renderable.cpp \
+                  matrix.cpp camera.cpp shader.cpp mesh.cpp renderable.cpp \
                   scene.cpp framebuffer.cpp texture.cpp
 STATIC_LIBS     = libglfw3.a
 FRAMEWORKS      = Cocoa OpenGL IOKit CoreVideo

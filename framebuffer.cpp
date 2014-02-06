@@ -66,6 +66,14 @@ void Framebuffer::unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+int Framebuffer::width() {
+    return _width;
+}
+
+int Framebuffer::height() {
+    return _height;
+}
+
 void Framebuffer::clear(GLbitfield mask) {
     bind();
     glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);

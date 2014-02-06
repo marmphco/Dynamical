@@ -4,11 +4,13 @@
     mcjee@ucsc.edu
 */
 
-#version 120
+#version 150
 
-varying vec4 fPosition;
+in vec4 fPosition;
 uniform sampler2D texture0;
 
+out vec4 fragColor;
+
 void main() {
-    gl_FragColor = texture2D(texture0, fPosition.xy);
+    fragColor = texture(texture0, fPosition.xy)+vec4(fPosition.rgb, 1.0);
 }

@@ -19,7 +19,7 @@
 #include "definitions.h"
 #include "matrix.h"
 #include "shader.h"
-#include "geometry.h"
+#include "mesh.h"
 
 namespace dynam {
 
@@ -29,7 +29,7 @@ private:
     GLuint vertexArrayObject;
 
 public:
-    Geometry *geometry;
+    Mesh *mesh;
     Shader *shader;
     GLenum drawType;
     GLenum polygonMode;
@@ -41,7 +41,7 @@ public:
 
     int visible;
 
-    Renderable(Geometry *, Shader *, GLenum drawType);
+    Renderable(Mesh *, Shader *, GLenum drawType);
     virtual ~Renderable();
     void init();
     void render(void);

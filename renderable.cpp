@@ -9,8 +9,8 @@
 
 namespace dynam {
 
-Renderable::Renderable(Geometry *geometryi, Shader *shaderi, GLenum drawTypei) :
-    geometry(geometryi),
+Renderable::Renderable(Mesh *meshi, Shader *shaderi, GLenum drawTypei) :
+    mesh(meshi),
     shader(shaderi),
     drawType(drawTypei),
     polygonMode(GL_FILL),
@@ -27,10 +27,10 @@ Renderable::~Renderable() {
 void Renderable::init() {
     glGenVertexArrays(1, &vertexArrayObject);
     glBindVertexArray(vertexArrayObject);
-    geometry->bind();
+    mesh->bind();
     setupVertexAttributes();
     glBindVertexArray(0);
-    geometry->unbind();
+    mesh->unbind();
 }
 
 void Renderable::render(void) {
@@ -41,9 +41,9 @@ void Renderable::render(void) {
     shader->setUniformMatrix4fv("inverseModelMatrix", 1, GL_FALSE, inverseModelMatrix().data);
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
     glBindVertexArray(vertexArrayObject);
-    geometry->bind();
-    glDrawElements(drawType, geometry->elementCount(), GL_UNSIGNED_INT, 0);
-    geometry->unbind();
+    mesh->bind();
+    glDrawElements(drawType, mesh->elementCount(), GL_UNSIGNED_INT, 0);
+    mesh->unbind();
     glBindVertexArray(0);
 }
 
