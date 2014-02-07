@@ -16,7 +16,6 @@
 #include "parameter.h"
 #include "definitions.h"
 #include "integrator.h"
-#include "renderer/vector.h"
 
 namespace dynam {
 

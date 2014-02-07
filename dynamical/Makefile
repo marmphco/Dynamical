@@ -1,14 +1,13 @@
-# renderer/Makefile
+# dynamical/Makefile
 # Dynamical
 # Matthew Jee
 # mcjee@ucsc.edu
 
 INCLUDEDEPS = ${filter clean,${MAKECMDGOALS}}
 
-BUILD_PRODUCT   = mjrender.a
+BUILD_PRODUCT   = dynamical.a
 
-C_SOURCE        = matrix.cpp camera.cpp shader.cpp mesh.cpp renderable.cpp \
-                  scene.cpp framebuffer.cpp texture.cpp
+C_SOURCE        = parameter.cpp dynamical.cpp integrator.cpp
 OBJECTS         = $(C_SOURCE:%.cpp=%.o)
 
 COMPILER        = clang++
@@ -30,7 +29,7 @@ $(BUILD_PRODUCT): $(OBJECTS)
 	$(COMPILE_CMD) -o $@ -c $<
 
 clean:
-	@echo Cleaning Renderer ===================================================
+	@echo Cleaning Dynamical ==================================================
 	- rm $(OBJECTS) $(BUILD_PRODUCT)
 
 dependencies:

@@ -8,10 +8,18 @@
 #include <iostream>
 #include <cassert>
 
-#include "definitions.h"
-#include "parameter.h"
-#include "integrator.h"
-#include "dynamical.h"
+#define _USE_MATH_DEFINES
+#define GLFW_INCLUDE_GLCOREARB
+#ifdef __APPLE__
+#   include "GLFW/glfw3.h"
+#else
+#   include "libglew/glew.h"
+#   include "GLFW/glfw3.h"
+#endif
+
+#include "dynamical/parameter.h"
+#include "dynamical/integrator.h"
+#include "dynamical/dynamical.h"
 
 #include "renderer/shader.h"
 #include "renderer/texture.h"
@@ -23,7 +31,6 @@ using namespace dynam;
 
 DynamicalSystem *lorenzSystem;
 Shader *displayShader;
-
 
 enum LorenzParameter {
     LORENZ_SIGMA,
