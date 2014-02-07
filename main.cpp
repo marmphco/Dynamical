@@ -12,20 +12,20 @@
 #include "integrator.h"
 #include "dynamical.h"
 
-#include "shader.h"
-#include "texture.h"
-#include "scene.h"
-#include "mesh.h"
+#include "renderer/shader.h"
+#include "renderer/texture.h"
+#include "renderer/scene.h"
+#include "renderer/mesh.h"
 
 using namespace std;
 using namespace dynam;
 
-    Shader *displayShader = new Shader();
+Shader *displayShader;
 
 class SystemModel : public Renderable {
 public:
     SystemModel(Mesh *mesh, Shader *shader) :
-        Renderable(mesh, shader, GL_LINES) {
+        Renderable(mesh, shader, GL_POINTS) {
 
     }
     ~SystemModel() {
@@ -102,19 +102,28 @@ int main(int, char **) {
     rho.setValue(28.0);
     beta.setValue(8.0/3.0);
 
-    /*for (double z = -5; z < 5; z++) {
+    GLfloat vertices[3000000];
+    GLuint indices[1000000];
+    int idx = 0;
+
+    for (double z = -5; z < 5; z++) {
         for (double y = -5; y < 5; y++) {
             for (double x = -5; x < 5; x++) {
                 Vector3 p(x, y, z);
                 double t = 0.0;
                 for (int i = 0; i < 1000; i++) {
                     p = lorenzSystem.evaluate(p, t);
+                    vertices[idx*3] = (GLfloat)p.x;
+                    vertices[idx*3+1] = (GLfloat)p.y;
+                    vertices[idx*3+2] = (GLfloat)p.z;
+                    indices[idx] = idx;
+                    idx++;
                     //cout << p.x << ", " << p.y << ", " << p.z << endl;
                     t += 0.01;
                 }
             }
         }
-    }*/
+    }
 
     Shader *shader = new Shader();
     displayShader = new Shader();
@@ -126,8 +135,6 @@ int main(int, char **) {
         glfwTerminate();
         return 0;
     }
-    displayShader->dumpAttributes();
-    shader->dumpAttributes();
 
     Texture2D *displayTexture = new Texture2D(GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 480, 480);
     displayTexture->interpolation(GL_LINEAR);
@@ -140,28 +147,27 @@ int main(int, char **) {
     framebuffer->backgroundColor = Vector4(0.0, 0.0, 0.0, 0.0);
     framebuffer->clear(GL_COLOR_BUFFER_BIT);
 
-    Mesh *mesh = loadWireCube(1.0, 1.0, 1.0);
+    Mesh *mesh = new Mesh((GLfloat *)vertices, indices, 1000000, 1000000, 3);//loadWireCube(1.0, 1.0, 1.0);
 
     SystemModel *model = new SystemModel(mesh, shader);
-    model->center = Vector3(0.5, 0.5, 0.5);
+    model->scale = Vector3(0.05, 0.05, 0.05);
+    //model->center = Vector3(0.5, 0.5, 0.5);
     model->init();
 
     Scene *scene = new Scene(framebuffer);
     scene->camera.perspective(-1.0f, 1.0f, -1.0f, 1.0f, 8.0f, 20.0f);
-    scene->camera.position = Vector3(0.0, 0.0, 10.0);
+    scene->camera.position = Vector3(0.0, 0.0, 20.0);
     scene->add(model);
 
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-        GLint loc = displayShader->getUniformLocation("aspectRatio");
-        displayShader->use();
-        glUniform1f(loc, 1.0*width/height);
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    GLint loc = displayShader->getUniformLocation("aspectRatio");
+    displayShader->use();
+    glUniform1f(loc, 1.0*width/height);
         
     while (!glfwWindowShouldClose(window)) {
-        glfwWaitEvents();
-        model->rotateGlobal(0.1, Vector3(1.0, 1.0, 0.0));
-
+        glfwPollEvents();
+        model->rotateGlobal(2, Vector3(1.0, 1.0, 0.0));
 
         scene->render();
 

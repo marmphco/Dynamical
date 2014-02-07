@@ -7,15 +7,12 @@ INCLUDEDEPS = ${filter clean,${MAKECMDGOALS}}
 
 OBJECT_DIR      = objects
 BUILD_DIR       = build
-LIB_DIR         = lib
 BUILD_NAME      = dynamical
 BUILD_PRODUCT   = $(BUILD_DIR)/$(BUILD_NAME)
 BUNDLE          = $(BUILD_DIR)/$(BUILD_NAME).app
 
-C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp\
-                  matrix.cpp camera.cpp shader.cpp mesh.cpp renderable.cpp \
-                  scene.cpp framebuffer.cpp texture.cpp
-STATIC_LIBS     = libglfw3.a
+C_SOURCE        = main.cpp parameter.cpp dynamical.cpp integrator.cpp
+STATIC_LIBS     = lib/libglfw3.a renderer/mjrender.a
 FRAMEWORKS      = Cocoa OpenGL IOKit CoreVideo
 OBJECTS         = $(C_SOURCE:%.cpp=$(OBJECT_DIR)/%.o)
 
@@ -29,6 +26,9 @@ LINK_CMD    = $(COMPILER) $(LINK_OPTIONS)
 all: $(BUILD_PRODUCT)
 
 again: clean $(BUILD_PRODUCT)
+
+renderer/mjrender.a:
+	make -C renderer
 
 run: $(BUILD_PRODUCT)
 	cp -r shaders/ $(BUILD_DIR)/shaders/
@@ -48,15 +48,17 @@ $(BUNDLE): $(BUILD_PRODUCT)
 runbundle: $(BUNDLE)
 	open $(BUNDLE)
 
-$(BUILD_PRODUCT): $(OBJECTS)
-	$(LINK_CMD) -o $@ $(OBJECTS) $(STATIC_LIBS:%=$(LIB_DIR)/%)
+$(BUILD_PRODUCT): $(OBJECTS) $(STATIC_LIBS)
+	$(LINK_CMD) -o $@ $(OBJECTS) $(STATIC_LIBS)
 
 $(OBJECT_DIR)/%.o: %.cpp
 	$(COMPILE_CMD) -o $@ -c $<
 
 clean:
-	- rm $(OBJECTS) $(BUILD_PRODUCT) $(BUNDLE)
+	- rm $(OBJECTS) $(BUILD_PRODUCT) 
+	- rm -r $(BUNDLE)
 	- rm $(BUILD_DIR)/shaders/*
+	- make -C renderer clean
 
 dependencies:
 	$(COMPILER) -MM $(C_SOURCE) > dependencies

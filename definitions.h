@@ -12,9 +12,6 @@
 #define GLFW_INCLUDE_GLCOREARB
 #ifdef __APPLE__
 #   include "GLFW/glfw3.h"
-//#   define glGenVertexArrays glGenVertexArraysAPPLE
-//#   define glBindVertexArray glBindVertexArrayAPPLE
-//#   define glDeleteVertexArrays glDeleteVertexArraysAPPLE
 #else
 #   include "libglew/glew.h"
 #   include "GLFW/glfw3.h"
@@ -22,7 +19,7 @@
 
 #include <vector>
 #include <string>
-#include "vector.h"
+#include "renderer/vector.h"
 #include "parameter.h"
 
 namespace dynam {
