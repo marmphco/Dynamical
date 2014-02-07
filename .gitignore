@@ -3,3 +3,5 @@
 *.sublime-workspace
 build/
 dependencies
+dynamical/dynamical.a
+renderer/mjrender.a
