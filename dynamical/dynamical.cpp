@@ -9,7 +9,7 @@
 
 namespace dynam {
 
-DynamicalSystem::DynamicalSystem(Integrable function, Integrator &integrator, int paramCount) :
+DynamicalSystem::DynamicalSystem(Integrable function, Integrator *integrator, int paramCount) :
     parameters(ParameterList(paramCount, Parameter())),
     function(function),
     integrator(integrator) {}
@@ -20,7 +20,7 @@ Parameter &DynamicalSystem::parameter(int id) {
 }
 
 Vector3 DynamicalSystem::evaluate(Vector3 x, double t) {
-    return integrator.evaluate(function, parameters, x, t);
+    return integrator->evaluate(function, parameters, x, t);
 }
 
 }

@@ -8,8 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+#include "DYPlotWindowController.h"
+
 @interface TPAppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
+@property (nonatomic, strong) DYPlotWindowController *plotWindowController;
 
 @end

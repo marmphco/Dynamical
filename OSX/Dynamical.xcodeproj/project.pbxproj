@@ -11,13 +11,19 @@
 		B0B5FD5918A4AA8300B69039 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD5718A4AA8300B69039 /* InfoPlist.strings */; };
 		B0B5FD5B18A4AA8300B69039 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD5A18A4AA8300B69039 /* main.m */; };
 		B0B5FD5F18A4AA8300B69039 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD5D18A4AA8300B69039 /* Credits.rtf */; };
-		B0B5FD6218A4AA8300B69039 /* TPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD6118A4AA8300B69039 /* TPAppDelegate.m */; };
+		B0B5FD6218A4AA8300B69039 /* TPAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD6118A4AA8300B69039 /* TPAppDelegate.mm */; };
 		B0B5FD6518A4AA8300B69039 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD6318A4AA8300B69039 /* MainMenu.xib */; };
 		B0B5FD6718A4AA8300B69039 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD6618A4AA8300B69039 /* Images.xcassets */; };
 		B0B5FD6E18A4AA8400B69039 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD6D18A4AA8400B69039 /* XCTest.framework */; };
 		B0B5FD6F18A4AA8400B69039 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */; };
 		B0B5FD7718A4AA8400B69039 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD7518A4AA8400B69039 /* InfoPlist.strings */; };
 		B0B5FD7918A4AA8400B69039 /* DynamicalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD7818A4AA8400B69039 /* DynamicalTests.m */; };
+		B0B5FD8518A4AD5C00B69039 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD8418A4AD5C00B69039 /* OpenGL.framework */; };
+		B0B5FD9418A5737300B69039 /* dynamical.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD9318A5737300B69039 /* dynamical.a */; };
+		B0B5FD9618A5737E00B69039 /* mjrender.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD9518A5737E00B69039 /* mjrender.a */; };
+		B0B5FD9818A573A000B69039 /* shaders in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD9718A573A000B69039 /* shaders */; };
+		B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */; };
+		B0B5FDA118A5C4B300B69039 /* PlotWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,7 +48,7 @@
 		B0B5FD5C18A4AA8300B69039 /* Dynamical-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Dynamical-Prefix.pch"; sourceTree = "<group>"; };
 		B0B5FD5E18A4AA8300B69039 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		B0B5FD6018A4AA8300B69039 /* TPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TPAppDelegate.h; sourceTree = "<group>"; };
-		B0B5FD6118A4AA8300B69039 /* TPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TPAppDelegate.m; sourceTree = "<group>"; };
+		B0B5FD6118A4AA8300B69039 /* TPAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TPAppDelegate.mm; sourceTree = "<group>"; };
 		B0B5FD6418A4AA8300B69039 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		B0B5FD6618A4AA8300B69039 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B0B5FD6C18A4AA8400B69039 /* DynamicalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DynamicalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +56,13 @@
 		B0B5FD7418A4AA8400B69039 /* DynamicalTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DynamicalTests-Info.plist"; sourceTree = "<group>"; };
 		B0B5FD7618A4AA8400B69039 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B0B5FD7818A4AA8400B69039 /* DynamicalTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DynamicalTests.m; sourceTree = "<group>"; };
+		B0B5FD8418A4AD5C00B69039 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		B0B5FD9318A5737300B69039 /* dynamical.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = dynamical.a; path = ../dynamical/dynamical.a; sourceTree = "<group>"; };
+		B0B5FD9518A5737E00B69039 /* mjrender.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = mjrender.a; path = ../renderer/mjrender.a; sourceTree = "<group>"; };
+		B0B5FD9718A573A000B69039 /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = ../shaders; sourceTree = "<group>"; };
+		B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotWindowController.h; sourceTree = "<group>"; };
+		B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotWindowController.mm; sourceTree = "<group>"; };
+		B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlotWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +70,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0B5FD9618A5737E00B69039 /* mjrender.a in Frameworks */,
+				B0B5FD8518A4AD5C00B69039 /* OpenGL.framework in Frameworks */,
 				B0B5FD4F18A4AA8300B69039 /* Cocoa.framework in Frameworks */,
+				B0B5FD9418A5737300B69039 /* dynamical.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +92,9 @@
 		B0B5FD4218A4AA8300B69039 = {
 			isa = PBXGroup;
 			children = (
+				B0B5FD9718A573A000B69039 /* shaders */,
+				B0B5FD9318A5737300B69039 /* dynamical.a */,
+				B0B5FD9518A5737E00B69039 /* mjrender.a */,
 				B0B5FD5418A4AA8300B69039 /* Dynamical */,
 				B0B5FD7218A4AA8400B69039 /* DynamicalTests */,
 				B0B5FD4D18A4AA8300B69039 /* Frameworks */,
@@ -95,6 +114,7 @@
 		B0B5FD4D18A4AA8300B69039 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B0B5FD8418A4AD5C00B69039 /* OpenGL.framework */,
 				B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */,
 				B0B5FD6D18A4AA8400B69039 /* XCTest.framework */,
 				B0B5FD5018A4AA8300B69039 /* Other Frameworks */,
@@ -116,7 +136,10 @@
 			isa = PBXGroup;
 			children = (
 				B0B5FD6018A4AA8300B69039 /* TPAppDelegate.h */,
-				B0B5FD6118A4AA8300B69039 /* TPAppDelegate.m */,
+				B0B5FD6118A4AA8300B69039 /* TPAppDelegate.mm */,
+				B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */,
+				B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */,
+				B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */,
 				B0B5FD6318A4AA8300B69039 /* MainMenu.xib */,
 				B0B5FD6618A4AA8300B69039 /* Images.xcassets */,
 				B0B5FD5518A4AA8300B69039 /* Supporting Files */,
@@ -233,7 +256,9 @@
 			files = (
 				B0B5FD5918A4AA8300B69039 /* InfoPlist.strings in Resources */,
 				B0B5FD6718A4AA8300B69039 /* Images.xcassets in Resources */,
+				B0B5FDA118A5C4B300B69039 /* PlotWindow.xib in Resources */,
 				B0B5FD5F18A4AA8300B69039 /* Credits.rtf in Resources */,
+				B0B5FD9818A573A000B69039 /* shaders in Resources */,
 				B0B5FD6518A4AA8300B69039 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,8 +278,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0B5FD6218A4AA8300B69039 /* TPAppDelegate.m in Sources */,
+				B0B5FD6218A4AA8300B69039 /* TPAppDelegate.mm in Sources */,
 				B0B5FD5B18A4AA8300B69039 /* main.m in Sources */,
+				B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +414,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dynamical/Dynamical-Prefix.pch";
 				INFOPLIST_FILE = "Dynamical/Dynamical-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/marmph/repos/cs161/dynamical/renderer,
+					/Users/marmph/repos/cs161/dynamical/dynamical,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -401,6 +432,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Dynamical/Dynamical-Prefix.pch";
 				INFOPLIST_FILE = "Dynamical/Dynamical-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/marmph/repos/cs161/dynamical/renderer,
+					/Users/marmph/repos/cs161/dynamical/dynamical,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -465,6 +501,7 @@
 				B0B5FD7E18A4AA8400B69039 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B0B5FD7F18A4AA8400B69039 /* Build configuration list for PBXNativeTarget "DynamicalTests" */ = {
 			isa = XCConfigurationList;
@@ -473,6 +510,7 @@
 				B0B5FD8118A4AA8400B69039 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -13,6 +13,8 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Insert code here to initialize your application
+    self.plotWindowController = [[DYPlotWindowController alloc] initWithWindowNibName:@"PlotWindow"];
+    [self.plotWindowController showWindow:self];
 }
-
+    
 @end

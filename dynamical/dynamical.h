@@ -23,10 +23,10 @@ class DynamicalSystem {
 private:
     ParameterList parameters;
     Integrable    function;
-    Integrator    &integrator;
+    Integrator    *integrator;
 
 public:
-    DynamicalSystem(Integrable function, Integrator &integrator, int paramCount);
+    DynamicalSystem(Integrable function, Integrator *integrator, int paramCount);
     
     Vector3 evaluate(Vector3 x, double t);
     Parameter &parameter(int id);
