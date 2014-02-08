@@ -52,66 +52,14 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
                    );
 }
 
-Mesh *loadWireCube(float width, float height, float depth) {
-    float vertexData[] = {
-        0.0, 0.0, 0.0,
-        width, 0.0, 0.0,
-        width, height, 0.0,
-        0.0, height, 0.0,
-        
-        0.0, 0.0, depth,
-        width, 0.0, depth,
-        width, height, depth,
-        0.0, height, depth,
-    };
-    GLuint indexData[] = {
-        0, 1, 1, 2, 2, 3, 3, 0,
-        4, 5, 5, 6, 6, 7, 7, 4,
-        1, 5, 2, 6, 3, 7, 0, 4,
-    };
-    return new Mesh(vertexData, indexData, 8, 24, 3);
-}
-
-void setupVertexAttributes(Renderable *object) {
-    GLint loc = object->shader->getAttribLocation("vPosition");
-    glEnableVertexAttribArray(loc);
-    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), 0);
-    loc = object->shader->getAttribLocation("vVelocity");
-    glEnableVertexAttribArray(loc);
-    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
-};
-
 @implementation DYPlotWindowController
 
 
 - (void)windowDidLoad
 {
-    NSOpenGLContext *context = self.openGLView.openGLContext;
-    [context makeCurrentContext];
-    
-    // setup 3.2 context
-    
-    CGLPixelFormatAttribute attributes[] = {
-        kCGLPFAColorSize, (CGLPixelFormatAttribute)24,
-        kCGLPFADepthSize, (CGLPixelFormatAttribute)16,
-        kCGLPFADoubleBuffer,
-        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)kCGLOGLPVersion_3_2_Core,
-        (CGLPixelFormatAttribute)0
-    };
-    
-    CGLPixelFormatObj object;
-    GLint npix;
-    CGLChoosePixelFormat(attributes, &object, &npix);
-    
-    CGLContextObj newcontext;
-    CGLCreateContext(object, NULL, &newcontext);
-    
-    NSOpenGLContext *newNSContext = [[NSOpenGLContext alloc] initWithCGLContextObj:newcontext];
-    [NSOpenGLContext clearCurrentContext];
-    [self.openGLView setOpenGLContext:newNSContext];
-    [newNSContext makeCurrentContext];
-    
-    NSLog(@"%s", glGetString(GL_VERSION));
+    self.plotViewController = [[DYPlotViewController alloc] initWithView:self.openGLView];
+    self.plotViewController.nextResponder = self.openGLView.nextResponder;
+    self.openGLView.nextResponder = self.plotViewController;
     
     EulerIntegrator *integrator = new EulerIntegrator(0.01);
     
@@ -128,76 +76,6 @@ void setupVertexAttributes(Renderable *object) {
     rho.setValue(28.0);
     beta.setValue(8.0/3.0);
     
-    Shader *shader = new Shader();
-    displayShader = new Shader();
-    try {
-        shader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
-                        [[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"fsh"] UTF8String]);
-        displayShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/display" ofType:@"vsh"] UTF8String],
-                               [[[NSBundle mainBundle] pathForResource:@"shaders/display" ofType:@"fsh"] UTF8String]);
-    } catch(exception &e) {
-        cout << e.what() << endl;
-        return;
-    }
-    
-    displayTexture = new Texture2D(GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 480, 480);
-    displayTexture->interpolation(GL_LINEAR);
-    displayTexture->borderColor(Vector4(1.0, 1.0, 0.0, 1.0));
-    displayTexture->initData((float *)0);
-    
-    Framebuffer *framebuffer = new Framebuffer(480, 480);
-    framebuffer->addRenderTarget(displayTexture, GL_COLOR_ATTACHMENT0);
-    framebuffer->addRenderTarget(GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT);
-    framebuffer->backgroundColor = Vector4(0.0, 0.0, 0.0, 0.0);
-    framebuffer->clear(GL_COLOR_BUFFER_BIT);
-    
-    GLfloat vertices[384000];
-    GLuint indices[64000];
-    int idx = 0;
-    for (double z = -2; z < 2; z++) {
-        for (double y = -2; y < 2; y++) {
-            for (double x = -2; x < 2; x++) {
-                Vector3 p(x, y, z);
-                double t = 0.0;
-                for (int i = 0; i < 1000; i++) {
-                    Vector3 op = p;
-                    p = lorenzSystem->evaluate(p, t);
-                    
-                    vertices[idx*6] = (GLfloat)p.x;
-                    vertices[idx*6+1] = (GLfloat)p.y;
-                    vertices[idx*6+2] = (GLfloat)p.z;
-                    
-                    vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
-                    vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
-                    vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
-                    
-                    indices[idx] = idx;
-                    idx++;
-                    t += 0.01;
-                }
-            }
-        }
-    }
-    mesh = new Mesh((GLfloat *)vertices, indices, 128000, 64000, 3);
-    
-    model = new Renderable(mesh, shader, GL_LINE_STRIP);
-    model->setupVertexAttributes = setupVertexAttributes;
-    model->scale = Vector3(0.1, 0.1, 0.1);
-    model->center = Vector3(00, 20, 20);
-    model->init();
-    
-    scene = new Scene(framebuffer);
-    scene->camera.perspective(-1.0f, 1.0f, -1.0f, 1.0f, 2.0, 30.0f);
-    scene->camera.position = Vector3(0.0, 0.0, 10.0);
-    scene->add(model);
-    
-    int width = self.openGLView.frame.size.width;
-    int height = self.openGLView.frame.size.height;
-    GLint loc = displayShader->getUniformLocation("aspectRatio");
-    displayShader->use();
-    glUniform1f(loc, 1.0*width/height);
-    
-    //[NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
     NSTimer *timer = [NSTimer timerWithTimeInterval:0.016 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
@@ -205,11 +83,16 @@ void setupVertexAttributes(Renderable *object) {
 
 - (void)timerFired:(NSTimer *)timer
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    model->rotateGlobal(2, Vector3(1.0, 1.0, 0.0));
+    //[self.plotViewController redraw];
+}
+
+- (IBAction)changeParameter:(id)sender
+{
+    lorenzSystem->parameter(LORENZ_SIGMA).setValue([self.paramSliderSigma doubleValue]);
+    lorenzSystem->parameter(LORENZ_RHO).setValue([self.paramSliderRho doubleValue]);
+    lorenzSystem->parameter(LORENZ_BETA).setValue([self.paramSliderBeta doubleValue]);
     GLfloat vertices[384000];
     GLuint indices[64000];
-    
     int idx = 0;
     for (double z = -2; z < 2; z++) {
         for (double y = -2; y < 2; y++) {
@@ -235,28 +118,15 @@ void setupVertexAttributes(Renderable *object) {
             }
         }
     }
-    mesh->modifyData((GLfloat *)vertices, indices, 128000, 64000, 3);
-    
-    scene->render();
-    
-    glViewport(0, 0, self.openGLView.frame.size.width, self.openGLView.frame.size.height);
-    displayShader->setUniform1f("aspectRatio", 1.0*self.openGLView.frame.size.width/self.openGLView.frame.size.height);
-    displayTexture->present(displayShader);
-    [self.openGLView.openGLContext flushBuffer];
-}
-
-- (IBAction)changeParameter:(id)sender
-{
-    lorenzSystem->parameter(LORENZ_SIGMA).setValue([self.paramSliderSigma doubleValue]);
-    lorenzSystem->parameter(LORENZ_RHO).setValue([self.paramSliderRho doubleValue]);
-    lorenzSystem->parameter(LORENZ_BETA).setValue([self.paramSliderBeta doubleValue]);
+    [self.plotViewController replacePathWithVertices:vertices indices:indices];
+    [self.plotViewController redraw];
 }
 
 - (IBAction)changeZoom:(id)sender
 {
     //scene->camera.zoom = [self.zoomSlider floatValue];
-    float zoom = [self.zoomSlider floatValue]*0.1;
-    model->scale = Vector3(zoom, zoom, zoom);
+    //float zoom = [self.zoomSlider floatValue]*0.1;
+    //model->scale = Vector3(zoom, zoom, zoom);
 }
 
 @end

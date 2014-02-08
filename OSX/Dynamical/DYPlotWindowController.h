@@ -7,15 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "DYPlotViewController.h"
 
 #include "../../dynamical/parameter.h"
 #include "../../dynamical/integrator.h"
 #include "../../dynamical/dynamical.h"
-
-#include "../../renderer/shader.h"
-#include "../../renderer/texture.h"
-#include "../../renderer/scene.h"
-#include "../../renderer/mesh.h"
 
 using namespace dynam;
 using namespace std;
@@ -23,12 +19,9 @@ using namespace std;
 @interface DYPlotWindowController : NSWindowController
 {
     DynamicalSystem *lorenzSystem;
-    Scene *scene;
-    Shader *displayShader;
-    Renderable *model;
-    Mesh *mesh;
-    Texture2D *displayTexture;
 }
+
+@property (nonatomic, strong) DYPlotViewController *plotViewController;
 
 @property (assign) IBOutlet NSOpenGLView *openGLView;
 
