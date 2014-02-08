@@ -4,10 +4,6 @@
  Matthew Jee
  mcjee@ucsc.edu
  
- Abstract class meant to be subclassed before usage.
- Definitely not the most efficient nor the most flexible,
- but it is very convenient for this project.
- 
  Shader Requirements:
  modelMatrix
  inverseModelMatrix
@@ -41,6 +37,9 @@ public:
 
     int visible;
 
+    void (*setupVertexAttributes)(Renderable *);
+    void (*setupUniforms)(Renderable *);
+
     Renderable(Mesh *, Shader *, GLenum drawType);
     virtual ~Renderable();
     void init();
@@ -56,10 +55,6 @@ public:
 
     Matrix4 modelMatrix();
     Matrix4 inverseModelMatrix();
-
-    // To be overridden by subclasses
-    virtual void setupVertexAttributes() = 0;
-    virtual void setupUniforms() = 0;
 };
 
 }

@@ -20,40 +20,25 @@
 using namespace dynam;
 using namespace std;
 
-class SystemModel : public Renderable {
-public:
-    SystemModel(Mesh *mesh, Shader *shader) :
-    Renderable(mesh, shader, GL_LINE_STRIP) {
-        
-    }
-    ~SystemModel() {
-        
-    }
-    void setupVertexAttributes() {
-        GLint loc = shader->getAttribLocation("vPosition");
-        glEnableVertexAttribArray(loc);
-        glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), 0);
-        loc = shader->getAttribLocation("vVelocity");
-        glEnableVertexAttribArray(loc);
-        glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
-    };
-    
-    void setupUniforms() {
-        
-    };
-};
-
-
 @interface DYPlotWindowController : NSWindowController
 {
     DynamicalSystem *lorenzSystem;
     Scene *scene;
     Shader *displayShader;
-    SystemModel *model;
+    Renderable *model;
     Mesh *mesh;
     Texture2D *displayTexture;
 }
 
 @property (assign) IBOutlet NSOpenGLView *openGLView;
+
+@property (assign) IBOutlet NSSlider *paramSliderRho;
+@property (assign) IBOutlet NSSlider *paramSliderSigma;
+@property (assign) IBOutlet NSSlider *paramSliderBeta;
+
+@property (assign) IBOutlet NSSlider *zoomSlider;
+
+- (IBAction)changeParameter:(id)sender;
+- (IBAction)changeZoom:(id)sender;
 
 @end

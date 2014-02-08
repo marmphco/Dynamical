@@ -7,7 +7,11 @@
         <customObject id="-2" userLabel="File's Owner" customClass="DYPlotWindowController">
             <connections>
                 <outlet property="openGLView" destination="cTM-vO-yAG" id="X1p-5u-bE2"/>
+                <outlet property="paramSliderBeta" destination="E5x-Mz-pko" id="by6-1x-rcl"/>
+                <outlet property="paramSliderRho" destination="wWf-pw-I7q" id="Vvr-QZ-Oh8"/>
+                <outlet property="paramSliderSigma" destination="miU-MG-GZg" id="ZM3-do-gc2"/>
                 <outlet property="window" destination="1" id="omK-q7-oxp"/>
+                <outlet property="zoomSlider" destination="FZI-HL-5cP" id="gKY-vI-yGw"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -15,22 +19,57 @@
         <window title="Dynamical" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" animationBehavior="default" id="1">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="535" height="424"/>
+            <rect key="contentRect" x="196" y="240" width="808" height="578"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <view key="contentView" id="2">
-                <rect key="frame" x="0.0" y="0.0" width="535" height="424"/>
+                <rect key="frame" x="0.0" y="0.0" width="808" height="578"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <openGLView useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cTM-vO-yAG">
-                        <rect key="frame" x="0.0" y="0.0" width="535" height="424"/>
+                        <rect key="frame" x="0.0" y="0.0" width="578" height="578"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </openGLView>
+                    <slider verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="miU-MG-GZg">
+                        <rect key="frame" x="584" y="539" width="206" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="-25" maxValue="25" doubleValue="10" tickMarkPosition="above" sliderType="linear" id="hUO-2M-CGM"/>
+                        <connections>
+                            <action selector="changeParameter:" target="-2" id="LfZ-GY-qh1"/>
+                        </connections>
+                    </slider>
+                    <slider verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wWf-pw-I7q">
+                        <rect key="frame" x="584" y="514" width="206" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="-50" maxValue="50" doubleValue="28" tickMarkPosition="above" sliderType="linear" id="d33-U5-0ti"/>
+                        <connections>
+                            <action selector="changeParameter:" target="-2" id="zhJ-So-MsL"/>
+                        </connections>
+                    </slider>
+                    <slider verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E5x-Mz-pko">
+                        <rect key="frame" x="584" y="489" width="206" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="-5" maxValue="5" doubleValue="2.6665999999999999" tickMarkPosition="above" sliderType="linear" id="3Xp-db-uOr"/>
+                        <connections>
+                            <action selector="changeParameter:" target="-2" id="ZGF-j6-Q9c"/>
+                        </connections>
+                    </slider>
+                    <slider horizontalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FZI-HL-5cP">
+                        <rect key="frame" x="677" y="17" width="21" height="283"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" continuous="YES" alignment="left" minValue="0.10000000000000001" maxValue="5" doubleValue="1" tickMarkPosition="right" sliderType="linear" id="7FB-BX-KSM"/>
+                        <connections>
+                            <action selector="changeZoom:" target="-2" id="a2g-D2-Xoh"/>
+                        </connections>
+                    </slider>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="cTM-vO-yAG" secondAttribute="bottom" id="eaA-wW-zBa"/>
-                    <constraint firstItem="cTM-vO-yAG" firstAttribute="top" secondItem="2" secondAttribute="top" id="iOd-tc-gfY"/>
-                    <constraint firstItem="cTM-vO-yAG" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="pnV-GP-OaU"/>
-                    <constraint firstAttribute="trailing" secondItem="cTM-vO-yAG" secondAttribute="trailing" id="qdR-GB-8tm"/>
+                    <constraint firstAttribute="bottom" secondItem="cTM-vO-yAG" secondAttribute="bottom" id="854-fG-1oJ"/>
+                    <constraint firstItem="E5x-Mz-pko" firstAttribute="leading" secondItem="cTM-vO-yAG" secondAttribute="trailing" constant="8" symbolic="YES" id="E04-LX-a17"/>
+                    <constraint firstItem="cTM-vO-yAG" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="M0e-11-k0f"/>
+                    <constraint firstItem="miU-MG-GZg" firstAttribute="leading" secondItem="cTM-vO-yAG" secondAttribute="trailing" constant="8" symbolic="YES" id="P0w-Ba-IKC"/>
+                    <constraint firstItem="cTM-vO-yAG" firstAttribute="top" secondItem="2" secondAttribute="top" id="Y7U-NH-su8"/>
+                    <constraint firstAttribute="trailing" secondItem="cTM-vO-yAG" secondAttribute="trailing" constant="230" id="moe-0P-7uI"/>
+                    <constraint firstItem="wWf-pw-I7q" firstAttribute="leading" secondItem="cTM-vO-yAG" secondAttribute="trailing" constant="8" symbolic="YES" id="ylT-Qw-p0p"/>
                 </constraints>
             </view>
         </window>

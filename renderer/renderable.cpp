@@ -17,7 +17,9 @@ Renderable::Renderable(Mesh *meshi, Shader *shaderi, GLenum drawTypei) :
     center(Vector3(0.0, 0.0, 0.0)),
     scale(Vector3(1.0, 1.0, 1.0)),
     position(Vector3(0.0, 0.0, 0.0)),
-    visible(true) {
+    visible(true),
+    setupVertexAttributes(NULL),
+    setupUniforms(NULL) {
 }
 
 Renderable::~Renderable() {
@@ -28,7 +30,9 @@ void Renderable::init() {
     glGenVertexArrays(1, &vertexArrayObject);
     glBindVertexArray(vertexArrayObject);
     mesh->bind();
-    setupVertexAttributes();
+    if (setupVertexAttributes) {
+        setupVertexAttributes(this);
+    }
     glBindVertexArray(0);
     mesh->unbind();
 }
@@ -36,7 +40,9 @@ void Renderable::init() {
 void Renderable::render(void) {
     if (!visible) return;
     shader->use();
-    setupUniforms();
+    if (setupUniforms) {
+        setupUniforms(this);
+    }
     shader->setUniformMatrix4fv("modelMatrix", 1, GL_FALSE, modelMatrix().data);
     shader->setUniformMatrix4fv("inverseModelMatrix", 1, GL_FALSE, inverseModelMatrix().data);
     glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
@@ -97,4 +103,5 @@ Matrix4 Renderable::inverseModelMatrix() {
     matrix.translate(center.x, center.y, center.z);
     return matrix;
 }
+
 }

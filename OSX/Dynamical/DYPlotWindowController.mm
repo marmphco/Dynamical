@@ -72,6 +72,15 @@ Mesh *loadWireCube(float width, float height, float depth) {
     return new Mesh(vertexData, indexData, 8, 24, 3);
 }
 
+void setupVertexAttributes(Renderable *object) {
+    GLint loc = object->shader->getAttribLocation("vPosition");
+    glEnableVertexAttribArray(loc);
+    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), 0);
+    loc = object->shader->getAttribLocation("vVelocity");
+    glEnableVertexAttribArray(loc);
+    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
+};
+
 @implementation DYPlotWindowController
 
 
@@ -104,7 +113,7 @@ Mesh *loadWireCube(float width, float height, float depth) {
     
     NSLog(@"%s", glGetString(GL_VERSION));
     
-    RK4Integrator *integrator = new RK4Integrator(0.01);
+    EulerIntegrator *integrator = new EulerIntegrator(0.01);
     
     lorenzSystem = new DynamicalSystem(lorenz, integrator, 3);
     
@@ -122,8 +131,6 @@ Mesh *loadWireCube(float width, float height, float depth) {
     Shader *shader = new Shader();
     displayShader = new Shader();
     try {
-        //shader->compile("shaders/basic.vsh", "shaders/basic.fsh");
-        //displayShader->compile("shaders/display.vsh", "shaders/display.fsh");
         shader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
                         [[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"fsh"] UTF8String]);
         displayShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/display" ofType:@"vsh"] UTF8String],
@@ -160,9 +167,9 @@ Mesh *loadWireCube(float width, float height, float depth) {
                     vertices[idx*6+1] = (GLfloat)p.y;
                     vertices[idx*6+2] = (GLfloat)p.z;
                     
-                    vertices[idx*6+3] = (GLfloat)p.x-op.x;
-                    vertices[idx*6+4] = (GLfloat)p.y-op.y;
-                    vertices[idx*6+5] = (GLfloat)p.z-op.z;
+                    vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
+                    vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
+                    vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
                     
                     indices[idx] = idx;
                     idx++;
@@ -173,13 +180,14 @@ Mesh *loadWireCube(float width, float height, float depth) {
     }
     mesh = new Mesh((GLfloat *)vertices, indices, 128000, 64000, 3);
     
-    model = new SystemModel(mesh, shader);
-    model->scale = Vector3(0.01, 0.01, 0.01);
+    model = new Renderable(mesh, shader, GL_LINE_STRIP);
+    model->setupVertexAttributes = setupVertexAttributes;
+    model->scale = Vector3(0.1, 0.1, 0.1);
     model->center = Vector3(00, 20, 20);
     model->init();
     
     scene = new Scene(framebuffer);
-    scene->camera.perspective(-1.0f, 1.0f, -1.0f, 1.0f, 8.0f, 20.0f);
+    scene->camera.perspective(-1.0f, 1.0f, -1.0f, 1.0f, 2.0, 30.0f);
     scene->camera.position = Vector3(0.0, 0.0, 10.0);
     scene->add(model);
     
@@ -189,7 +197,9 @@ Mesh *loadWireCube(float width, float height, float depth) {
     displayShader->use();
     glUniform1f(loc, 1.0*width/height);
     
-    [NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
+    //[NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
+    NSTimer *timer = [NSTimer timerWithTimeInterval:0.016 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
 
 
@@ -214,9 +224,9 @@ Mesh *loadWireCube(float width, float height, float depth) {
                     vertices[idx*6+1] = (GLfloat)p.y;
                     vertices[idx*6+2] = (GLfloat)p.z;
                     
-                    vertices[idx*6+3] = (GLfloat)p.x-op.x;
-                    vertices[idx*6+4] = (GLfloat)p.y-op.y;
-                    vertices[idx*6+5] = (GLfloat)p.z-op.z;
+                    vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
+                    vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
+                    vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
                     
                     indices[idx] = idx;
                     idx++;
@@ -233,6 +243,20 @@ Mesh *loadWireCube(float width, float height, float depth) {
     displayShader->setUniform1f("aspectRatio", 1.0*self.openGLView.frame.size.width/self.openGLView.frame.size.height);
     displayTexture->present(displayShader);
     [self.openGLView.openGLContext flushBuffer];
+}
+
+- (IBAction)changeParameter:(id)sender
+{
+    lorenzSystem->parameter(LORENZ_SIGMA).setValue([self.paramSliderSigma doubleValue]);
+    lorenzSystem->parameter(LORENZ_RHO).setValue([self.paramSliderRho doubleValue]);
+    lorenzSystem->parameter(LORENZ_BETA).setValue([self.paramSliderBeta doubleValue]);
+}
+
+- (IBAction)changeZoom:(id)sender
+{
+    //scene->camera.zoom = [self.zoomSlider floatValue];
+    float zoom = [self.zoomSlider floatValue]*0.1;
+    model->scale = Vector3(zoom, zoom, zoom);
 }
 
 @end
