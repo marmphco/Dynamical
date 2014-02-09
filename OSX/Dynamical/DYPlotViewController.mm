@@ -12,26 +12,6 @@
 
 @end
 
-Mesh *loadWireCube(float width, float height, float depth) {
-    float vertexData[] = {
-        0.0, 0.0, 0.0,
-        width, 0.0, 0.0,
-        width, height, 0.0,
-        0.0, height, 0.0,
-        
-        0.0, 0.0, depth,
-        width, 0.0, depth,
-        width, height, depth,
-        0.0, height, depth,
-    };
-    GLuint indexData[] = {
-        0, 1, 1, 2, 2, 3, 3, 0,
-        4, 5, 5, 6, 6, 7, 7, 4,
-        1, 5, 2, 6, 3, 7, 0, 4,
-    };
-    return new Mesh(vertexData, indexData, 8, 24, 3);
-}
-
 void setupVertexAttributes(Renderable *object) {
     GLint loc = object->shader->getAttribLocation("vPosition");
     glEnableVertexAttribArray(loc);
@@ -39,6 +19,12 @@ void setupVertexAttributes(Renderable *object) {
     loc = object->shader->getAttribLocation("vVelocity");
     glEnableVertexAttribArray(loc);
     glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
+};
+
+void setupAxesVertexAttributes(Renderable *object) {
+    GLint loc = object->shader->getAttribLocation("vPosition");
+    glEnableVertexAttribArray(loc);
+    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 };
 
 @implementation DYPlotViewController
@@ -103,12 +89,33 @@ void setupVertexAttributes(Renderable *object) {
         model = new Renderable(mesh, shader, GL_LINE_STRIP);
         model->setupVertexAttributes = setupVertexAttributes;
         model->scale = Vector3(0.1, 0.1, 0.1);
-        model->center = Vector3(00, 20, 20);
+        //model->center = Vector3(00, 20, 20);
         model->init();
         
+        GLfloat axesVertices[] = {
+            -10.0, 0.0,  0.0,
+            1.0, 0.0,  0.0,
+            10.0, 0.0,  0.0,
+            1.0, 0.0,  0.0,
+            0.0, -10.0, 0.0,
+            0.0,  1.0,  0.0,
+            0.0,  10.0, 0.0,
+            0.0,  1.0, 0.0,
+            0.0,  0.0, -10.0,
+            0.0,  0.0, 1.0,
+            0.0,  0.0,  10.0,
+            0.0,  0.0,  1.0
+        };
+        GLuint axesIndices[] = {0, 1, 2, 3, 4, 5};
+        axesMesh = new Mesh(axesVertices, axesIndices, 12, 6, 3);
+        axes = new Renderable(axesMesh, shader, GL_LINES);
+        axes->setupVertexAttributes = setupVertexAttributes;
+        axes->init();
+        
         scene = new Scene(framebuffer);
-        scene->camera.perspective(-1.0f, 1.0f, -1.0f, 1.0f, 2.0, 30.0f);
+        scene->camera.perspective(-1.0f, 1.0f, -1.0f, 1.0f, 2.0, 60.0f);
         scene->camera.position = Vector3(0.0, 0.0, 10.0);
+        scene->add(axes);
         scene->add(model);
         
         int width = self.plotView.frame.size.width;
@@ -152,6 +159,7 @@ void setupVertexAttributes(Renderable *object) {
     Vector3 axis = Vector3(-dy, dx, 0.0);
     float magnitude = axis.length();
     model->rotateGlobal(magnitude, axis.normalized());
+    axes->rotateGlobal(magnitude, axis.normalized());
     previousPointInView = [self.view convertPoint:point fromView:theEvent.window.contentView];
     [self redraw];
 }

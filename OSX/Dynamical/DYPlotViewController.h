@@ -20,7 +20,9 @@ using namespace dynam;
     Scene *scene;
     Shader *displayShader;
     Renderable *model;
+    Renderable *axes;
     Mesh *mesh;
+    Mesh *axesMesh;
     Texture2D *displayTexture;
     
     // For mouse handling
