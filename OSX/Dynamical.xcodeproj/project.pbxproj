@@ -40,6 +40,7 @@
 /* Begin PBXFileReference section */
 		B039F33818A6E7BF00A1BA5F /* DYPlotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotViewController.h; sourceTree = "<group>"; };
 		B039F33918A6E7BF00A1BA5F /* DYPlotViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotViewController.mm; sourceTree = "<group>"; };
+		B08A29C718B968EE009C9C31 /* DYPlotViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYPlotViewControllerDelegate.h; sourceTree = "<group>"; };
 		B0B5FD4B18A4AA8300B69039 /* Dynamical.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dynamical.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B0B5FD5118A4AA8300B69039 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -144,6 +145,7 @@
 				B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */,
 				B039F33818A6E7BF00A1BA5F /* DYPlotViewController.h */,
 				B039F33918A6E7BF00A1BA5F /* DYPlotViewController.mm */,
+				B08A29C718B968EE009C9C31 /* DYPlotViewControllerDelegate.h */,
 				B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */,
 				B0B5FD6318A4AA8300B69039 /* MainMenu.xib */,
 				B0B5FD6618A4AA8300B69039 /* Images.xcassets */,

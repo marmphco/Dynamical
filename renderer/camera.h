@@ -8,6 +8,7 @@
 #ifndef MJ_CAMERA_H
 #define MJ_CAMERA_H
 
+#include "transform.h"
 #include "matrix.h"
 #include "vector.h"
 
@@ -16,8 +17,8 @@ namespace dynam {
 class Camera {
 private:
     Matrix4 _projectionMatrix;
-    Matrix4 _viewMatrix;
-    Matrix4 _inverseViewMatrix;
+    /*Matrix4 _viewMatrix;
+    Matrix4 _inverseViewMatrix;*/
     float _left;
     float _right;
     float _bottom;
@@ -25,8 +26,9 @@ private:
     float _near;
     float _far;
 public:
-    Vector3 position;
-    Matrix4 rotation;
+    /*Vector3 position;
+    Matrix4 rotation;*/
+    Transform transform;
     float zoom;
 
     Camera();
@@ -43,16 +45,16 @@ public:
                      float near,
                      float far);
 
-    void resetRotation();
+   /* void resetRotation();
     void rotateGlobal(float angle, Vector3 axis);
     void rotateLocal(float angle, Vector3 axis);
     void translateGlobal(float amount, Vector3 axis);
-    void translateLocal(float amount, Vector3 axis);
+    void translateLocal(float amount, Vector3 axis);*/
 
-    void lookAt(Vector3 target, Vector3 up);
+    //void lookAt(Vector3 target, Vector3 up);
     Matrix4 &projectionMatrix();
-    Matrix4 &viewMatrix();
-    Matrix4 &inverseViewMatrix();
+    Matrix4 viewMatrix();
+    Matrix4 inverseViewMatrix();
 };
 
 }

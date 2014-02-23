@@ -54,10 +54,10 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
 
 @implementation DYPlotWindowController
 
-
 - (void)windowDidLoad
 {
     self.plotViewController = [[DYPlotViewController alloc] initWithView:self.openGLView];
+    self.plotViewController.delegate = self;
     self.plotViewController.nextResponder = self.openGLView.nextResponder;
     self.openGLView.nextResponder = self.plotViewController;
     
@@ -76,14 +76,58 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     rho.setValue(28.0);
     beta.setValue(8.0/3.0);
     
-    NSTimer *timer = [NSTimer timerWithTimeInterval:0.016 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
-    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    [self.plotViewController addSeed]->transform.position = Vector3(1, 1, 1);
+    [self.plotViewController addSeed]->transform.position = Vector3(3, 4, 5);
+    
+    [self.plotViewController enumerateSeedsWithBlock:^(Seed *seed) {
+        [self updateSeed:seed];
+    }];
+    
+    double delayInSeconds = 0.1;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self.plotViewController viewDidResize];
+    });
 }
 
-
-- (void)timerFired:(NSTimer *)timer
+- (void)windowDidEndLiveResize:(NSNotification *)notification
 {
-    //[self.plotViewController redraw];
+    [self.plotViewController viewDidResize];
+}
+
+- (void)updateSeed:(Seed *)seed
+{
+    GLfloat vertices[6000];
+    GLuint indices[1000];
+    int idx = 0;
+    Vector3 p = seed->transform.position;
+    double t = 0.0;
+    for (int i = 0; i < 1000; i++) {
+        Vector3 op = p;
+        p = lorenzSystem->evaluate(p, t);
+        
+        vertices[idx*6] = (GLfloat)p.x;
+        vertices[idx*6+1] = (GLfloat)p.y;
+        vertices[idx*6+2] = (GLfloat)p.z;
+        
+        vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
+        vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
+        vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
+        
+        indices[idx] = idx;
+        idx++;
+        t += 0.01;
+    }
+    [self.plotViewController replacePathWithID:seed->pathID
+                                      vertices:vertices
+                                       indices:indices
+                                   vertexCount:2000
+                                    indexCount:1000];
+}
+
+- (void)seedWasMoved:(Seed *)seed
+{
+    [self updateSeed:seed];
 }
 
 - (IBAction)changeParameter:(id)sender
@@ -91,42 +135,24 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     lorenzSystem->parameter(LORENZ_SIGMA).setValue([self.paramSliderSigma doubleValue]);
     lorenzSystem->parameter(LORENZ_RHO).setValue([self.paramSliderRho doubleValue]);
     lorenzSystem->parameter(LORENZ_BETA).setValue([self.paramSliderBeta doubleValue]);
-    GLfloat vertices[384000];
-    GLuint indices[64000];
-    int idx = 0;
-    for (double z = -2; z < 2; z++) {
-        for (double y = -2; y < 2; y++) {
-            for (double x = -2; x < 2; x++) {
-                Vector3 p(x, y, z);
-                double t = 0.0;
-                for (int i = 0; i < 1000; i++) {
-                    Vector3 op = p;
-                    p = lorenzSystem->evaluate(p, t);
-                    
-                    vertices[idx*6] = (GLfloat)p.x;
-                    vertices[idx*6+1] = (GLfloat)p.y;
-                    vertices[idx*6+2] = (GLfloat)p.z;
-                    
-                    vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
-                    vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
-                    vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
-                    
-                    indices[idx] = idx;
-                    idx++;
-                    t += 0.01;
-                }
-            }
-        }
-    }
-    [self.plotViewController replacePathWithVertices:vertices indices:indices];
+    
+    [self.plotViewController enumerateSeedsWithBlock:^(Seed *seed) {
+        [self updateSeed:seed];
+    }];
+    
     [self.plotViewController redraw];
 }
 
 - (IBAction)changeZoom:(id)sender
 {
-    //scene->camera.zoom = [self.zoomSlider floatValue];
-    //float zoom = [self.zoomSlider floatValue]*0.1;
-    //model->scale = Vector3(zoom, zoom, zoom);
+    [self.plotViewController setZoom:[self.zoomSlider floatValue]];
+    [self changeParameter:self];
+}
+
+- (IBAction)addSeed:(id)sender
+{
+    [self updateSeed:[self.plotViewController addSeed]];
+    [self.plotViewController redraw];
 }
 
 @end

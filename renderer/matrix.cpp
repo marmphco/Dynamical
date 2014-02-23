@@ -23,7 +23,7 @@ Matrix4::Matrix4(float a, float b, float c, float d,
     data[12] = d; data[13] = h; data[14] = l; data[15] = q;
 }
 
-Matrix4 Matrix4::operator*(Matrix4 &m) const {
+Matrix4 Matrix4::operator*(const Matrix4 &m) const {
     Matrix4 temp;
     temp.data[0] = data[0]*m.data[0]+data[4]*m.data[1]+data[8]*m.data[2]+data[12]*m.data[3];
     temp.data[1] = data[1]*m.data[0]+data[5]*m.data[1]+data[9]*m.data[2]+data[13]*m.data[3];
@@ -47,7 +47,7 @@ Matrix4 Matrix4::operator*(Matrix4 &m) const {
     return temp;
 }
 
-Matrix4 &Matrix4::operator*=(Matrix4 &m) {
+Matrix4 &Matrix4::operator*=(const Matrix4 &m) {
     float temp0 = data[0]*m.data[0]+data[4]*m.data[1]+data[8]*m.data[2]+data[12]*m.data[3];
     float temp1 = data[1]*m.data[0]+data[5]*m.data[1]+data[9]*m.data[2]+data[13]*m.data[3];
     float temp2 = data[2]*m.data[0]+data[6]*m.data[1]+data[10]*m.data[2]+data[14]*m.data[3];
@@ -99,16 +99,6 @@ Vector3 Matrix4::operator*(Vector3 that) const {
     return temp;
 }
 
-/*
-Vector4 Matrix4::operator*(Vector4 that) const {
-    Vector4 temp;
-    temp.r = that.x*data[0]+that.y*data[4]+that.z*data[8]+data[12];
-    temp.g = that.x*data[1]+that.y*data[5]+that.z*data[9]+data[13];
-    temp.b = that.x*data[2]+that.y*data[6]+that.z*data[10]+data[14];
-    temp.a = that.x*data[3]+that.y*data[7]+that.z*data[11]+data[15];
-    return temp;
-}*/
-
 void Matrix4::identity() {
     data[0] = 1;   data[1] = 0;  data[2] = 0;  data[3] = 0;
     data[4] = 0;   data[5] = 1;  data[6] = 0;  data[7] = 0;
@@ -138,9 +128,9 @@ void Matrix4::ortho(float left,
     data[0] = 2/xlength;
     data[5] = 2/ylength;
     data[10] = 2/zlength;
-    data[12] = (right+left)/xlength;
-    data[13] = (top+bottom)/ylength;
-    data[14] = (far+near)/zlength;
+    data[12] = -(right+left)/xlength;
+    data[13] = -(top+bottom)/ylength;
+    data[14] = -(far+near)/zlength;
 }
 void Matrix4::frustum(float left,
                       float right,
@@ -225,7 +215,8 @@ Matrix4 &Matrix4::rotate(float angle, Vector3 axis) {
     temp.data[8] = xz2+wy2;   temp.data[9] = yz2-wx2;   temp.data[10] = 1-xx2-yy2; temp.data[11] = 0;
     temp.data[12] = 0;        temp.data[13] = 0;        temp.data[14] = 0;         temp.data[15] = 1;
 
-    *this = temp**this;
+    Matrix4 &self = *this;
+    *this = temp*self;
     return *this;
 }
 

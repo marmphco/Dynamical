@@ -30,8 +30,8 @@ public:
             float e, float f, float g, float h,
             float i, float j, float k, float l,
             float m, float n, float p, float q);
-    Matrix4 operator*(Matrix4 &that) const;
-    Matrix4 &operator*=(Matrix4 &that);
+    Matrix4 operator*(const Matrix4 &that) const;
+    Matrix4 &operator*=(const Matrix4 &that);
     Vector3 operator*(Vector3 that) const;
     Vector4 operator*(Vector4 that) const;
 

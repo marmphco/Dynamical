@@ -8,7 +8,7 @@ INCLUDEDEPS = ${filter clean,${MAKECMDGOALS}}
 BUILD_PRODUCT   = mjrender.a
 
 C_SOURCE        = matrix.cpp camera.cpp shader.cpp mesh.cpp renderable.cpp \
-                  scene.cpp framebuffer.cpp texture.cpp
+                  scene.cpp framebuffer.cpp texture.cpp transform.cpp
 OBJECTS         = $(C_SOURCE:%.cpp=%.o)
 
 COMPILER        = clang++

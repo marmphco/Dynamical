@@ -9,6 +9,7 @@
 #define MJ_SCENE_H
 
 #include <vector>
+#include "transform.h"
 #include "definitions.h"
 #include "renderable.h"
 #include "camera.h"
@@ -18,12 +19,14 @@ namespace dynam {
 
 class Scene {
 private:
-    
+    std::vector<int> freeIDs;
+
 public:
     std::vector<Renderable *> renderables;
 
     Framebuffer *framebuffer;
     Camera camera;
+    Transform transform;
 
     //hack to enable/disable automatic framebuffer clearing
     bool clearEnabled;
@@ -37,11 +40,13 @@ public:
 
     Scene(Framebuffer *);
     ~Scene();
-    void add(Renderable *);
-    void remove(Renderable *);
-    void render();
+    int add(Renderable *);
+    void remove(int objectID);
+    Renderable *getObject(int objectID);
+    void render(void);
 
-    void eachRenderable(void (*)(Renderable *));
+    int pickObjectID(int x, int y);
+    Renderable *pickObject(int x, int y);
 };
 
 }

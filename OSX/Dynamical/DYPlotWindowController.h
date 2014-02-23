@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "DYPlotViewController.h"
+#import "DYPlotViewControllerDelegate.h"
 
 #include "../../dynamical/parameter.h"
 #include "../../dynamical/integrator.h"
@@ -16,7 +17,7 @@
 using namespace dynam;
 using namespace std;
 
-@interface DYPlotWindowController : NSWindowController
+@interface DYPlotWindowController : NSWindowController <NSWindowDelegate, DYPlotViewControllerDelegate>
 {
     DynamicalSystem *lorenzSystem;
 }
@@ -31,7 +32,10 @@ using namespace std;
 
 @property (assign) IBOutlet NSSlider *zoomSlider;
 
+- (void)updateSeed:(Seed *)seed;
+
 - (IBAction)changeParameter:(id)sender;
 - (IBAction)changeZoom:(id)sender;
+- (IBAction)addSeed:(id)sender;
 
 @end

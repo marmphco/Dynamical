@@ -43,6 +43,9 @@ namespace dynam {
         fragShader = compileShader(GL_FRAGMENT_SHADER, fSrcPath);
         glAttachShader(program, vertexShader);
         glAttachShader(program, fragShader);
+        // there be dragons
+        glBindFragDataLocation(program, 0, "fragColor");
+        glBindFragDataLocation(program, 1, "fragID");
         glLinkProgram(program);
 
         GLint status;
