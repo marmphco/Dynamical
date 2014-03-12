@@ -7,7 +7,7 @@
 //
 
 #import "DYOpenGLView.h"
-/*
+
 static void setupVertexAttributes(Renderable *object) {
     GLint loc = object->shader->getAttribLocation("vPosition");
     glEnableVertexAttribArray(loc);
@@ -15,12 +15,6 @@ static void setupVertexAttributes(Renderable *object) {
     loc = object->shader->getAttribLocation("vVelocity");
     glEnableVertexAttribArray(loc);
     glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
-};
-
-static void setupAxesVertexAttributes(Renderable *object) {
-    GLint loc = object->shader->getAttribLocation("vPosition");
-    glEnableVertexAttribArray(loc);
-    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 };
 
 @implementation DYOpenGLView
@@ -46,24 +40,26 @@ static void setupAxesVertexAttributes(Renderable *object) {
 
 - (void)awakeFromNib
 {
-    [self setOpenGLContext:[DYPlotView sharedContext]];
+    [self setOpenGLContext:[DYOpenGLView sharedContext]];
     
     NSLog(@"%s", glGetString(GL_VERSION));
     
     glEnable(GL_DEPTH_TEST);
     
-    // setup scene
-    
-    basicShader = new Shader();
+    velocityColorShader = new Shader();
     pickShader = new Shader();
     displayShader = new Shader();
+    flatColorShader = new Shader();
     try {
-        basicShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
-                             [[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"fsh"] UTF8String]);
-        pickShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
-                            [[[NSBundle mainBundle] pathForResource:@"shaders/pick" ofType:@"fsh"] UTF8String]);
-        displayShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/display" ofType:@"vsh"] UTF8String],
-                               [[[NSBundle mainBundle] pathForResource:@"shaders/display" ofType:@"fsh"] UTF8String]);
+        NSBundle *bundle = [NSBundle mainBundle];
+        velocityColorShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
+                             [[bundle pathForResource:@"shaders/color_ramp" ofType:@"fsh"] UTF8String]);
+        pickShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
+                            [[bundle pathForResource:@"shaders/white_pick" ofType:@"fsh"] UTF8String]);
+        displayShader->compile([[bundle pathForResource:@"shaders/display" ofType:@"vsh"] UTF8String],
+                               [[bundle pathForResource:@"shaders/display" ofType:@"fsh"] UTF8String]);
+        flatColorShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
+                                 [[bundle pathForResource:@"shaders/color_flat" ofType:@"fsh"] UTF8String]);
     } catch(exception &e) {
         cout << e.what() << endl;
     }
@@ -90,22 +86,16 @@ static void setupAxesVertexAttributes(Renderable *object) {
     framebuffer->clear(GL_COLOR_BUFFER_BIT);
     
     GLfloat axesVertices[] = {
-        -10.0, 0.0,  0.0,
-        1.0, 0.0,  0.0,
-        10.0, 0.0,  0.0,
-        1.0, 0.0,  0.0,
-        0.0, -10.0, 0.0,
-        0.0,  1.0,  0.0,
-        0.0,  10.0, 0.0,
-        0.0,  1.0, 0.0,
-        0.0,  0.0, -10.0,
-        0.0,  0.0, 1.0,
-        0.0,  0.0,  10.0,
-        0.0,  0.0,  1.0
+        -10.0, 0.0,  0.0, 1.0, 0.0,  0.0,
+        10.0, 0.0,  0.0, 1.0, 0.0,  0.0,
+        0.0, -10.0, 0.0, 0.0,  1.0,  0.0,
+        0.0,  10.0, 0.0, 0.0,  1.0, 0.0,
+        0.0,  0.0, -10.0, 0.0,  0.0, 1.0,
+        0.0,  0.0,  10.0, 0.0,  0.0,  1.0
     };
     GLuint axesIndices[] = {0, 1, 2, 3, 4, 5};
     axesMesh = new Mesh(axesVertices, axesIndices, 12, 6, 3);
-    axes = new Renderable(axesMesh, basicShader, GL_LINES);
+    axes = new Renderable(axesMesh, flatColorShader, GL_LINES);
     axes->setupVertexAttributes = setupVertexAttributes;
     axes->init();
         
@@ -114,7 +104,7 @@ static void setupAxesVertexAttributes(Renderable *object) {
     scene->camera.transform.position = Vector3(0.0, 0.0, 10.0);
     scene->add(axes);
     
-    selected = -1;
+    selected = NULL;
 }
 
 - (void)update
@@ -164,7 +154,7 @@ static void setupAxesVertexAttributes(Renderable *object) {
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    selected = -1;
+    //selected = NULL;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
@@ -172,7 +162,13 @@ static void setupAxesVertexAttributes(Renderable *object) {
     [self.openGLContext setView:self];
     NSPoint point = [theEvent locationInWindow];
     previousPointInView = [self convertPoint:point fromView:theEvent.window.contentView];
-    selected = scene->pickObjectID(previousPointInView.x, previousPointInView.y);
+    int selectedID = scene->pickObjectID(previousPointInView.x, previousPointInView.y);
+    if (selectedID != -1) {
+        selected = scene->getObject(selectedID);
+        [self renderableWasSelected:selected];
+    } else {
+        selected = NULL;
+    }
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -185,10 +181,10 @@ static void setupAxesVertexAttributes(Renderable *object) {
     Vector3 axis = Vector3(-dy, dx, 0.0);
     float magnitude = axis.length();
 
-    if (selected == -1) {
+    if (selected == NULL) {
         scene->transform.rotateGlobal(magnitude, axis.normalized());
     } else {
-        // something for subclass to deal with
+        [self renderable:selected draggedFromPoint:previousPointInView toPoint:pointInView];
     }
     
     previousPointInView = [self convertPoint:point fromView:theEvent.window.contentView];
@@ -206,5 +202,32 @@ static void setupAxesVertexAttributes(Renderable *object) {
     scene->transform.scale = Vector3(zoom, zoom, zoom);
 }
 
+- (void)renderableWasSelected:(Renderable *)renderable
+{
+    
+}
 
-@end*/
+- (void)renderable:(Renderable *)renderable draggedFromPoint:(NSPoint)origin toPoint:(NSPoint)destination
+{
+    Matrix4 viewMatrix = scene->camera.viewMatrix()*scene->transform.matrix();
+    Matrix3 viewRotation = viewMatrix.matrix3().transpose();
+    
+    Vector3 viewXAxis = viewRotation * X_AXIS;
+    Vector3 viewYAxis = viewRotation * Y_AXIS;
+    
+    //the depth of the object plane in view space
+    float n = 2.0;
+    float f = (viewMatrix*(renderable->transform.position+renderable->transform.center)).z;
+    float worldx = (destination.x*2.0/self.frame.size.width-1.0)*f/n;
+    float worldy = (destination.y*2.0/self.frame.size.height-1.0)*f/n;
+    float worldlastx = (origin.x*2.0/self.frame.size.width-1.0)*f/n;
+    float worldlasty = (origin.y*2.0/self.frame.size.height-1.0)*f/n;
+    float worldxDiff = worldx-worldlastx;
+    float worldyDiff = worldy-worldlasty;
+    
+    float scaleFactor = 1.0/(scene->transform.scale.x*scene->transform.scale.x);
+    renderable->transform.position += viewXAxis*-worldxDiff*scaleFactor + viewYAxis*-worldyDiff*scaleFactor;
+}
+
+
+@end

@@ -8,11 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "DYOpenGLView.h"
 #import "DYPlotViewDelegate.h"
-#include "../../renderer/shader.h"
-#include "../../renderer/texture.h"
-#include "../../renderer/scene.h"
-#include "../../renderer/mesh.h"
 #include <list>
 
 using namespace dynam;
@@ -20,11 +17,14 @@ using namespace dynam;
 class Seed : public Renderable {
 public:
     int seedID;
-    int pathID;
-    
-    Seed(Mesh *mesh, Shader *shader, int pathID) :
+    //int pathID;
+    vector<int> pathIDs;
+    int evolutionCount;
+        
+    Seed(Mesh *mesh, Shader *shader, int evolutions) :
         Renderable(mesh, shader, GL_TRIANGLES),
-        pathID(pathID) {
+        pathIDs(10, 0),
+        evolutionCount(evolutions){
         transform.center = Vector3(0.5, 0.5, 0.5);
     };
 };
@@ -33,34 +33,17 @@ public:
  A view that draws paths and allows users to pick objects
  with the mouse. It knows nothing about the dynamical systems.
  */
-@interface DYPlotView : NSOpenGLView
+@interface DYPlotView : DYOpenGLView
 {
-    Scene *scene;
-    Shader *basicShader;
-    Shader *pickShader;
-    Shader *displayShader;
-    Renderable *axes;
-    Mesh *axesMesh;
     Mesh *cubeMesh;
-    Texture2D *displayTexture;
-    Texture2D *pickTexture;
-    
     std::list<Seed *> seeds;
-    
-    // For mouse handling
-    NSPoint previousPointInView;
-    int selected;
 }
 
 @property (nonatomic, weak) IBOutlet id<DYPlotViewDelegate> delegate;
 
-+ (NSOpenGLContext *)sharedContext;
-
-- (void)redraw;
-- (void)setZoom:(float)zoom;
-
 - (Seed *)addSeed;
-//- (void)removeSelectedSeed;
+- (void)removeSelectedSeed;
+
 - (void)enumerateSeedsWithBlock:(void (^)(Seed *)) block;
 
 - (void)replacePathWithID:(int)pathID

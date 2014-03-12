@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B0ACB0FF18CFE73F00C226F6 /* DYOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */; };
+		B0ACB10318CFFF9400C226F6 /* DYParameterSpaceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ACB10218CFFF9400C226F6 /* DYParameterSpaceView.mm */; };
 		B0B5FD4F18A4AA8300B69039 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */; };
 		B0B5FD5918A4AA8300B69039 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD5718A4AA8300B69039 /* InfoPlist.strings */; };
 		B0B5FD5B18A4AA8300B69039 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD5A18A4AA8300B69039 /* main.m */; };
@@ -43,6 +44,9 @@
 		B08A29C718B968EE009C9C31 /* DYPlotViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYPlotViewDelegate.h; sourceTree = "<group>"; };
 		B0ACB0FD18CFE73F00C226F6 /* DYOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYOpenGLView.h; sourceTree = "<group>"; };
 		B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYOpenGLView.mm; sourceTree = "<group>"; };
+		B0ACB10118CFFF9400C226F6 /* DYParameterSpaceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYParameterSpaceView.h; sourceTree = "<group>"; };
+		B0ACB10218CFFF9400C226F6 /* DYParameterSpaceView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYParameterSpaceView.mm; sourceTree = "<group>"; };
+		B0ACB10618D006C800C226F6 /* DYParameterSpaceViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYParameterSpaceViewDelegate.h; sourceTree = "<group>"; };
 		B0B5FD4B18A4AA8300B69039 /* Dynamical.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dynamical.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B0B5FD5118A4AA8300B69039 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -99,6 +103,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B0ACB10018CFFB2A00C226F6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B0ACB0FD18CFE73F00C226F6 /* DYOpenGLView.h */,
+				B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */,
+				B0ED7CDB18CF8A24007FFF62 /* DYPlotView.h */,
+				B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */,
+				B0ACB10118CFFF9400C226F6 /* DYParameterSpaceView.h */,
+				B0ACB10218CFFF9400C226F6 /* DYParameterSpaceView.mm */,
+				B0FB1C6A18CFD551006BC2F2 /* DYParameterTableView.h */,
+				B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		B0B5FD4218A4AA8300B69039 = {
 			isa = PBXGroup;
 			children = (
@@ -145,17 +164,13 @@
 		B0B5FD5418A4AA8300B69039 /* Dynamical */ = {
 			isa = PBXGroup;
 			children = (
+				B0ACB10018CFFB2A00C226F6 /* Views */,
 				B0B5FD6018A4AA8300B69039 /* TPAppDelegate.h */,
 				B0B5FD6118A4AA8300B69039 /* TPAppDelegate.mm */,
 				B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */,
 				B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */,
-				B0ACB0FD18CFE73F00C226F6 /* DYOpenGLView.h */,
-				B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */,
-				B0ED7CDB18CF8A24007FFF62 /* DYPlotView.h */,
-				B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */,
 				B08A29C718B968EE009C9C31 /* DYPlotViewDelegate.h */,
-				B0FB1C6A18CFD551006BC2F2 /* DYParameterTableView.h */,
-				B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */,
+				B0ACB10618D006C800C226F6 /* DYParameterSpaceViewDelegate.h */,
 				B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */,
 				B0B5FD6318A4AA8300B69039 /* MainMenu.xib */,
 				B0B5FD6618A4AA8300B69039 /* Images.xcassets */,
@@ -300,6 +315,7 @@
 				B0B5FD5B18A4AA8300B69039 /* main.m in Sources */,
 				B0FB1C6C18CFD551006BC2F2 /* DYParameterTableView.m in Sources */,
 				B0ACB0FF18CFE73F00C226F6 /* DYOpenGLView.mm in Sources */,
+				B0ACB10318CFFF9400C226F6 /* DYParameterSpaceView.mm in Sources */,
 				B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

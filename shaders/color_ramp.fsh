@@ -6,7 +6,7 @@ in vec3 fVelocity;
 out vec4 fragColor;
 
 void main() {
-    float m = length(fVelocity)/10.0;
+    float m = length(fVelocity)/1.0;
     
     vec4 none = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 r = vec4(1.0, 0.0, 0.0, 1.0);

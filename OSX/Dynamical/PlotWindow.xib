@@ -6,8 +6,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DYPlotWindowController">
             <connections>
-                <outlet property="openGLView" destination="cTM-vO-yAG" id="X1p-5u-bE2"/>
                 <outlet property="parameterView" destination="3zc-qJ-2U2" id="HWb-R7-gRx"/>
+                <outlet property="plotView" destination="cTM-vO-yAG" id="72R-RC-xkf"/>
                 <outlet property="sliderTableView" destination="lXu-X0-8fi" id="Cif-ff-JoK"/>
                 <outlet property="window" destination="1" id="omK-q7-oxp"/>
             </connections>
@@ -24,10 +24,10 @@
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E1K-gb-DrN">
-                        <rect key="frame" x="810" y="13" width="226" height="32"/>
+                        <rect key="frame" x="934" y="13" width="102" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="214" id="eT9-78-M1C"/>
+                            <constraint firstAttribute="width" constant="90" id="eT9-78-M1C"/>
                         </constraints>
                         <buttonCell key="cell" type="push" title="Add Seed" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pQ9-EJ-Dby">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -182,9 +182,12 @@
                                 <rect key="frame" x="412" y="0.0" width="396" height="412"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <subviews>
-                                    <openGLView appearanceType="lightContent" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3zc-qJ-2U2" customClass="DYPlotView">
+                                    <openGLView appearanceType="lightContent" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3zc-qJ-2U2" customClass="DYParameterSpaceView">
                                         <rect key="frame" x="0.0" y="12" width="400" height="400"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="-2" id="hpz-98-2Z0"/>
+                                        </connections>
                                     </openGLView>
                                 </subviews>
                                 <constraints>
@@ -200,13 +203,26 @@
                             <real value="250"/>
                         </holdingPriorities>
                     </splitView>
+                    <button appearanceType="lightContent" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iIL-tf-qN1">
+                        <rect key="frame" x="810" y="13" width="124" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Remove Seed" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hla-8y-D2v">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="removeSeed:" target="-2" id="xJh-ja-BuP"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="iIL-tf-qN1" firstAttribute="baseline" secondItem="E1K-gb-DrN" secondAttribute="baseline" id="13p-eU-aVt"/>
+                    <constraint firstItem="iIL-tf-qN1" firstAttribute="leading" secondItem="TOL-bY-ecb" secondAttribute="trailing" constant="8" symbolic="YES" id="J3x-5T-ek6"/>
                     <constraint firstAttribute="bottom" secondItem="E1K-gb-DrN" secondAttribute="bottom" constant="20" symbolic="YES" id="KbH-zi-DFz"/>
                     <constraint firstAttribute="trailing" secondItem="E1K-gb-DrN" secondAttribute="trailing" constant="8" id="MNx-Eg-K9v"/>
                     <constraint firstItem="TOL-bY-ecb" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="Qhw-Em-goX"/>
                     <constraint firstItem="TOL-bY-ecb" firstAttribute="top" secondItem="GcK-6a-vdU" secondAttribute="top" id="TcC-f1-4AM"/>
-                    <constraint firstItem="E1K-gb-DrN" firstAttribute="leading" secondItem="TOL-bY-ecb" secondAttribute="trailing" constant="8" symbolic="YES" id="TqA-Bt-OzQ"/>
+                    <constraint firstItem="E1K-gb-DrN" firstAttribute="leading" secondItem="TOL-bY-ecb" secondAttribute="trailing" constant="132" id="TqA-Bt-OzQ"/>
                     <constraint firstAttribute="bottom" secondItem="TOL-bY-ecb" secondAttribute="bottom" constant="-12" id="dSg-WX-1gu"/>
                     <constraint firstItem="TOL-bY-ecb" firstAttribute="top" secondItem="2" secondAttribute="top" id="gav-VB-wxa"/>
                     <constraint firstItem="GcK-6a-vdU" firstAttribute="leading" secondItem="TOL-bY-ecb" secondAttribute="trailing" id="izV-wp-Apn"/>

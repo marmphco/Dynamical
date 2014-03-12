@@ -17,12 +17,6 @@ static void setupVertexAttributes(Renderable *object) {
     glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
 };
 
-static void setupAxesVertexAttributes(Renderable *object) {
-    GLint loc = object->shader->getAttribLocation("vPosition");
-    glEnableVertexAttribArray(loc);
-    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
-};
-
 static Mesh *loadCube(float width, float height, float depth) {
     float vertexData[] = {
         0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
@@ -54,131 +48,11 @@ static Mesh *loadCube(float width, float height, float depth) {
 
 @implementation DYPlotView
 
-+ (NSOpenGLContext *)sharedContext
-{
-    static NSOpenGLContext *context;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSOpenGLPixelFormatAttribute formatAttributes[] = {
-            NSOpenGLPFAColorSize, 24,
-            NSOpenGLPFADepthSize, 16,
-            NSOpenGLPFADoubleBuffer,
-            NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
-            0
-        };
-        NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:formatAttributes];
-        context = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
-        [context makeCurrentContext];
-    });
-    return context;
-}
-
 - (void)awakeFromNib
 {
-    [self setOpenGLContext:[DYPlotView sharedContext]];
-    
-    NSLog(@"%s", glGetString(GL_VERSION));
-    
-    glEnable(GL_DEPTH_TEST);
-    
-    // setup scene
-    
-    basicShader = new Shader();
-    pickShader = new Shader();
-    displayShader = new Shader();
-    try {
-        basicShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
-                             [[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"fsh"] UTF8String]);
-        pickShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
-                            [[[NSBundle mainBundle] pathForResource:@"shaders/pick" ofType:@"fsh"] UTF8String]);
-        displayShader->compile([[[NSBundle mainBundle] pathForResource:@"shaders/display" ofType:@"vsh"] UTF8String],
-                               [[[NSBundle mainBundle] pathForResource:@"shaders/display" ofType:@"fsh"] UTF8String]);
-    } catch(exception &e) {
-        cout << e.what() << endl;
-    }
-    
-    displayTexture = new Texture2D(GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 480, 480);
-    displayTexture->interpolation(GL_LINEAR);
-    displayTexture->borderColor(Vector4(1.0, 1.0, 0.0, 1.0));
-    displayTexture->initData((float *)0);
-    
-    pickTexture = new Texture2D(GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, 480, 480);
-    pickTexture->interpolation(GL_LINEAR);
-    pickTexture->borderColor(Vector4(1.0, 1.0, 0.0, 1.0));
-    pickTexture->initData((float *)0);
-    
-    Framebuffer *framebuffer = new Framebuffer(480, 480);
-    framebuffer->addRenderTarget(displayTexture, GL_COLOR_ATTACHMENT0);
-    framebuffer->addRenderTarget(pickTexture, GL_COLOR_ATTACHMENT1);
-    framebuffer->addRenderTarget(GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT);
-    
-    GLenum buffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-    glDrawBuffers(2, buffers);
-    
-    framebuffer->backgroundColor = Vector4(0.0, 0.0, 0.0, 0.0);
-    framebuffer->clear(GL_COLOR_BUFFER_BIT);
-    
-    GLfloat axesVertices[] = {
-        -10.0, 0.0,  0.0,
-        1.0, 0.0,  0.0,
-        10.0, 0.0,  0.0,
-        1.0, 0.0,  0.0,
-        0.0, -10.0, 0.0,
-        0.0,  1.0,  0.0,
-        0.0,  10.0, 0.0,
-        0.0,  1.0, 0.0,
-        0.0,  0.0, -10.0,
-        0.0,  0.0, 1.0,
-        0.0,  0.0,  10.0,
-        0.0,  0.0,  1.0
-    };
-    GLuint axesIndices[] = {0, 1, 2, 3, 4, 5};
-    axesMesh = new Mesh(axesVertices, axesIndices, 12, 6, 3);
-    axes = new Renderable(axesMesh, basicShader, GL_LINES);
-    axes->setupVertexAttributes = setupVertexAttributes;
-    axes->init();
-    
+    [super awakeFromNib];
     cubeMesh = loadCube(1.0, 1.0, 1.0);
-    
-    scene = new Scene(framebuffer);
-    scene->camera.perspective(-1.0f, 1.0f, -1.0f, 1.0f, 2.0, 60.0f);
-    scene->camera.transform.position = Vector3(0.0, 0.0, 10.0);
-    scene->add(axes);
-    
-    selected = -1;
-}
 
-- (void)update
-{
-    [self.openGLContext setView:self];
-    int width = self.frame.size.width;
-    int height = self.frame.size.height;
-    // recreate framebuffer
-    displayTexture = new Texture2D(GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, width, height);
-    displayTexture->interpolation(GL_LINEAR);
-    displayTexture->borderColor(Vector4(1.0, 1.0, 0.0, 1.0));
-    displayTexture->initData((float *)0);
-    
-    pickTexture = new Texture2D(GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, width, height);
-    pickTexture->interpolation(GL_LINEAR);
-    pickTexture->borderColor(Vector4(1.0, 1.0, 0.0, 1.0));
-    pickTexture->initData((float *)0);
-    
-    Framebuffer *framebuffer = new Framebuffer(width, height);
-    framebuffer->addRenderTarget(displayTexture, GL_COLOR_ATTACHMENT0);
-    framebuffer->addRenderTarget(pickTexture, GL_COLOR_ATTACHMENT1);
-    framebuffer->addRenderTarget(GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT);
-    
-    GLenum buffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-    glDrawBuffers(2, buffers);
-    
-    framebuffer->backgroundColor = Vector4(0.0, 0.0, 0.0, 0.0);
-    framebuffer->clear(GL_COLOR_BUFFER_BIT);
-    
-    delete scene->framebuffer;
-    scene->framebuffer = framebuffer;
-    
-    [self redraw];
 }
 
 - (Seed *)addSeed
@@ -186,22 +60,42 @@ static Mesh *loadCube(float width, float height, float depth) {
     [self.openGLContext setView:self];
     GLfloat vertices[6] = {0, 0, 0, 0, 0, 0};
     GLuint indices[1] = {0};
-    Mesh *mesh = new Mesh((GLfloat *)vertices, indices, 2, 1, 3);
     
-    Renderable *path = new Renderable(mesh, basicShader, GL_LINE_STRIP);
-    path->setupVertexAttributes = setupVertexAttributes;
-    path->init();
-    
-    int pathID = scene->add(path);
-    
-    Seed *seed = new Seed(cubeMesh, pickShader, pathID);
+    int evolutions = 20;
+    Seed *seed = new Seed(cubeMesh, pickShader, evolutions);
     seed->setupVertexAttributes = setupVertexAttributes;
     seed->init();
     seed->transform.center = Vector3(0.0, 0.0, 0.0);
     seed->seedID = scene->add(seed);
     
+    for (int i = 0; i < evolutions; i++) {
+        Mesh *mesh = new Mesh((GLfloat *)vertices, indices, 2, 1, 3);
+        Renderable *path = new Renderable(mesh, velocityColorShader, GL_LINE_STRIP);
+        path->setupVertexAttributes = setupVertexAttributes;
+        path->init();
+        seed->pathIDs[i] = scene->add(path);
+    }
+    
     seeds.push_back(seed);
     return seed;
+}
+
+- (void)removeSelectedSeed
+{
+    std::list<Seed *>::iterator i;
+    for (i = seeds.begin(); i != seeds.end();++i) {
+        if (*i == selected) break;
+    }
+    seeds.erase(i);
+    
+    std::vector<int>::iterator j;
+    for (j = ((Seed *)selected)->pathIDs.begin(); j < ((Seed *)selected)->pathIDs.end(); ++j) {
+        scene->remove(*j);
+        delete scene->getObject(*j)->mesh;
+        delete scene->getObject(*j);
+    }
+    scene->remove(((Seed *)selected)->seedID);
+    delete selected;
 }
 
 - (void)enumerateSeedsWithBlock:(void (^)(Seed *))block
@@ -219,84 +113,22 @@ static Mesh *loadCube(float width, float height, float depth) {
               vertexCount:(int)vertexCount
                indexCount:(int)indexCount
 {
+    NSLog(@"update %d", pathID);
     [self.openGLContext setView:self];
     Renderable *path = scene->getObject(pathID);
+    NSLog(@"%p", path);
     path->mesh->modifyData((GLfloat *)vertices, indices, vertexCount, indexCount, 3);
 }
 
-- (void)redraw
+- (void)renderableWasSelected:(Renderable *)renderable
 {
-    [self.openGLContext setView:self];
-    scene->render();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, self.frame.size.width, self.frame.size.height);
-    displayShader->use();
-    displayShader->setUniform1f("aspectRatio", 1.0);
-    displayTexture->present(displayShader);
-    [self.openGLContext flushBuffer];
-}
-
-- (void)mouseUp:(NSEvent *)theEvent
-{
-    selected = -1;
-}
-
-- (void)mouseDown:(NSEvent *)theEvent
-{
-    [self.openGLContext setView:self];
-    NSPoint point = [theEvent locationInWindow];
-    previousPointInView = [self convertPoint:point fromView:theEvent.window.contentView];
-    selected = scene->pickObjectID(previousPointInView.x, previousPointInView.y);
-}
-
-- (void)mouseDragged:(NSEvent *)theEvent
-{
-    [self.openGLContext setView:self];
-    NSPoint point = [theEvent locationInWindow];
-    NSPoint pointInView = [self convertPoint:point fromView:theEvent.window.contentView];
-    float dx = pointInView.x-previousPointInView.x;
-    float dy = pointInView.y-previousPointInView.y;
-    Vector3 axis = Vector3(-dy, dx, 0.0);
-    float magnitude = axis.length();
-
-    if (selected == -1) {
-        scene->transform.rotateGlobal(magnitude, axis.normalized());
-    } else {
-        Renderable *selection = scene->getObject(selected);
-        Matrix4 viewMatrix = scene->camera.viewMatrix()*scene->transform.matrix();
-        Matrix3 viewRotation = viewMatrix.matrix3().transpose();
-        
-        Vector3 viewXAxis = viewRotation * X_AXIS;
-        Vector3 viewYAxis = viewRotation * Y_AXIS;
-        
-        //the depth of the object plane in view space
-        float n = 2.0;
-        float f = (viewMatrix*(selection->transform.position+selection->transform.center)).z;
-        float worldx = (pointInView.x*2.0/self.frame.size.width-1.0)*f/n;
-        float worldy = (pointInView.y*2.0/self.frame.size.height-1.0)*f/n;
-        float worldlastx = (previousPointInView.x*2.0/self.frame.size.width-1.0)*f/n;
-        float worldlasty = (previousPointInView.y*2.0/self.frame.size.height-1.0)*f/n;
-        float worldxDiff = worldx-worldlastx;
-        float worldyDiff = worldy-worldlasty;
-        
-        float scaleFactor = 1.0/(scene->transform.scale.x*scene->transform.scale.x);
-        selection->transform.position += viewXAxis*-worldxDiff*scaleFactor + viewYAxis*-worldyDiff*scaleFactor;
-        [self.delegate seedWasMoved:(Seed *)selection];
-    }
     
-    previousPointInView = [self convertPoint:point fromView:theEvent.window.contentView];
-    [self redraw];
 }
 
-- (void)scrollWheel:(NSEvent *)theEvent
+- (void)renderable:(Renderable *)renderable draggedFromPoint:(NSPoint)origin toPoint:(NSPoint)destination
 {
-    scene->transform.scaleUniform(1.0+[theEvent deltaY]*0.01);
-    [self redraw];
-}
-
-- (void)setZoom:(float)zoom
-{
-    scene->transform.scale = Vector3(zoom, zoom, zoom);
+    [super renderable:renderable draggedFromPoint:origin toPoint:destination];
+    [self.delegate seedWasMoved:(Seed *)renderable];
 }
 
 @end

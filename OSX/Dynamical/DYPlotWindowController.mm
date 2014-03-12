@@ -86,24 +86,23 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     aspectRatio.height = 400;
     [self.window setContentAspectRatio:aspectRatio];
     
-    [self.openGLView addSeed]->transform.position = Vector3(1, 1, 1);
-    [self.openGLView addSeed]->transform.position = Vector3(3, 4, 5);
+    [self.plotView addSeed]->transform.position = Vector3(1, 1, 1);
     
-    [self.openGLView enumerateSeedsWithBlock:^(Seed *seed) {
+    [self.plotView enumerateSeedsWithBlock:^(Seed *seed) {
         [self updateSeed:seed];
     }];
     
     double delayInSeconds = 0.1;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self.openGLView update];
+        [self.plotView update];
         [self.parameterView update];
     });
 }
 
 - (void)updateSeed:(Seed *)seed
 {
-    GLfloat vertices[6000];
+    /*GLfloat vertices[6000];
     GLuint indices[1000];
     int idx = 0;
     Vector3 p = seed->transform.position;
@@ -124,11 +123,93 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
         idx++;
         t += 0.01;
     }
-    [self.openGLView replacePathWithID:seed->pathID
+    [self.plotView replacePathWithID:seed->pathID
                                       vertices:vertices
                                        indices:indices
                                    vertexCount:2000
-                                    indexCount:1000];
+                                    indexCount:1000];*/
+  /*  int count = 1000;
+    int evolutions = seed->evolutionCount;
+    GLfloat vertices[count*6*evolutions];
+    GLuint indices[count*evolutions];
+    
+    Parameter &sigma = dynamicalSystem->parameter(LORENZ_SIGMA);
+    Parameter &rho = dynamicalSystem->parameter(LORENZ_RHO);
+    Parameter &beta = dynamicalSystem->parameter(LORENZ_BETA);
+    
+    int idx = 0;
+    for (int j = 0; j < evolutions; j++) {
+        Vector3 p = seed->transform.position;
+        
+        double s = j*1.0/evolutions;
+        sigma.setValue(sigma.minValue()+(sigma.maxValue()-sigma.minValue())*s);
+        rho.setValue(rho.minValue()+(rho.maxValue()-rho.minValue())*s);
+        beta.setValue(beta.minValue()+(beta.maxValue()-beta.minValue())*s);
+        
+        double t = 0.0;
+        for (int i = 0; i < count; i++) {
+            Vector3 op = p;
+            p = dynamicalSystem->evaluate(p, t);
+            
+            vertices[idx*6] = (GLfloat)p.x;
+            vertices[idx*6+1] = (GLfloat)p.y;
+            vertices[idx*6+2] = (GLfloat)p.z;
+            
+            vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
+            vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
+            vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
+            
+            indices[idx] = idx;
+            idx++;
+            t += 0.01;
+        }
+
+    }
+    [self.plotView replacePathWithID:seed->pathID
+                            vertices:vertices
+                             indices:indices
+                         vertexCount:count*2*evolutions
+                          indexCount:count*evolutions];*/
+    int count = 1000;
+    int evolutions = seed->evolutionCount;
+    
+    Parameter &sigma = dynamicalSystem->parameter(LORENZ_SIGMA);
+    Parameter &rho = dynamicalSystem->parameter(LORENZ_RHO);
+    Parameter &beta = dynamicalSystem->parameter(LORENZ_BETA);
+    
+    for (int j = 0; j < evolutions; j++) {
+        
+        GLfloat vertices[count*6];
+        GLuint indices[count];
+        Vector3 p = seed->transform.position;
+        
+        double s = j*1.0/evolutions;
+        sigma.setValue(sigma.minValue()+(sigma.maxValue()-sigma.minValue())*s);
+        rho.setValue(rho.minValue()+(rho.maxValue()-rho.minValue())*s);
+        beta.setValue(beta.minValue()+(beta.maxValue()-beta.minValue())*s);
+        
+        double t = 0.0;
+        for (int i = 0; i < count; i++) {
+            Vector3 op = p;
+            p = dynamicalSystem->evaluate(p, t);
+            
+            vertices[i*6] = (GLfloat)p.x;
+            vertices[i*6+1] = (GLfloat)p.y;
+            vertices[i*6+2] = (GLfloat)p.z;
+            
+            vertices[i*6+3] = s;//(GLfloat)p.x-op.x;
+            vertices[i*6+4] = s;//(GLfloat)p.y-op.y;
+            vertices[i*6+5] = s;//(GLfloat)p.z-op.z;
+            
+            indices[i] = i;
+            t += 0.01;
+        }
+        [self.plotView replacePathWithID:seed->pathIDs[j]
+                                vertices:vertices
+                                 indices:indices
+                             vertexCount:count*2
+                              indexCount:count];
+    }
 }
 
 - (void)seedWasMoved:(Seed *)seed
@@ -141,21 +222,44 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     NSSlider *slider = (NSSlider *)sender;
     dynamicalSystem->parameter((int)slider.tag).setValue([slider doubleValue]);
     
-    [self.openGLView enumerateSeedsWithBlock:^(Seed *seed) {
+    [self.plotView enumerateSeedsWithBlock:^(Seed *seed) {
         [self updateSeed:seed];
     }];
     
     NSIndexSet *rowIndices = [NSIndexSet indexSetWithIndex:slider.tag];
-    NSIndexSet *colIndices = [NSIndexSet indexSet];
+    NSIndexSet *colIndices = [NSIndexSet indexSetWithIndex:0];
     [self.sliderTableView reloadDataForRowIndexes:rowIndices columnIndexes:colIndices];
-    [self.sliderTableView reloadData];
-    [self.openGLView redraw];
+    [self.plotView redraw];
 }
 
 - (IBAction)addSeed:(id)sender
 {
-    [self updateSeed:[self.openGLView addSeed]];
-    [self.openGLView redraw];
+    [self updateSeed:[self.plotView addSeed]];
+    [self.plotView redraw];
+}
+
+- (IBAction)removeSeed:(id)sender
+{
+    [self.plotView removeSelectedSeed];
+    [self.plotView redraw];
+}
+
+#pragma mark -
+#pragma mark DYParameterSpaceViewDelegate
+
+- (void)parameterSpaceViewBoundsDidChange:(DYParameterSpaceView *)view
+{
+    dynamicalSystem->parameter(0).setMinValue([view minValueForAxis:0]);
+    dynamicalSystem->parameter(0).setMaxValue([view maxValueForAxis:0]);
+    dynamicalSystem->parameter(1).setMinValue([view minValueForAxis:1]);
+    dynamicalSystem->parameter(1).setMaxValue([view maxValueForAxis:1]);
+    dynamicalSystem->parameter(2).setMinValue([view minValueForAxis:2]);
+    dynamicalSystem->parameter(2).setMaxValue([view maxValueForAxis:2]);
+    [self.sliderTableView reloadData];
+    [self.plotView enumerateSeedsWithBlock:^(Seed *seed) {
+        [self updateSeed:seed];
+    }];
+    [self.plotView redraw];
 }
 
 #pragma mark -
@@ -176,8 +280,8 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     DYParameterTableView *view = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
     view.nameField.stringValue = [NSString stringWithUTF8String:parameter.name.c_str()];
     [view.valueField setFloatValue:parameter.value()];
-    [view.minField setFloatValue:parameter.maxValue()];
-    [view.maxField setFloatValue:parameter.minValue()];
+    [view.minField setFloatValue:parameter.minValue()];
+    [view.maxField setFloatValue:parameter.maxValue()];
     [view.slider setMaxValue:parameter.maxValue()];
     [view.slider setMinValue:parameter.minValue()];
     [view.slider setDoubleValue:parameter.value()];
