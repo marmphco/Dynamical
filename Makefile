@@ -28,6 +28,8 @@ all: $(BUILD_PRODUCT)
 
 again: clean $(BUILD_PRODUCT)
 
+lib: renderer/mjrender.a dynamical/dynamical.a
+
 renderer/mjrender.a:
 	@echo Building Renderer ===================================================
 	make -C renderer

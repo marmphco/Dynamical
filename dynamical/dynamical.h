@@ -30,6 +30,7 @@ public:
     
     Vector3 evaluate(Vector3 x, double t);
     Parameter &parameter(int id);
+    int parameterCount(void);
 };
 
 }

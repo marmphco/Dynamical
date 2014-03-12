@@ -7,6 +7,7 @@
 //
 
 #import "DYPlotWindowController.h"
+#import "DYParameterTableView.h"
 
 enum LorenzParameter {
     LORENZ_SIGMA,
@@ -54,45 +55,50 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
 
 @implementation DYPlotWindowController
 
-- (void)windowDidLoad
+- (void)windowWillLoad
 {
-    self.plotViewController = [[DYPlotViewController alloc] initWithView:self.openGLView];
-    self.plotViewController.delegate = self;
-    self.plotViewController.nextResponder = self.openGLView.nextResponder;
-    self.openGLView.nextResponder = self.plotViewController;
-    
     EulerIntegrator *integrator = new EulerIntegrator(0.01);
     
-    lorenzSystem = new DynamicalSystem(lorenz, integrator, 3);
+    dynamicalSystem = new DynamicalSystem(lorenz, integrator, 3);
     
-    Parameter &sigma = lorenzSystem->parameter(LORENZ_SIGMA);
-    Parameter &rho = lorenzSystem->parameter(LORENZ_RHO);
-    Parameter &beta = lorenzSystem->parameter(LORENZ_BETA);
+    Parameter &sigma = dynamicalSystem->parameter(LORENZ_SIGMA);
+    Parameter &rho = dynamicalSystem->parameter(LORENZ_RHO);
+    Parameter &beta = dynamicalSystem->parameter(LORENZ_BETA);
     
     sigma.name = "sigma";
     rho.name = "rho";
     beta.name = "beta";
+    sigma.setMinValue(-25.0);
+    rho.setMinValue(-50.0);
+    beta.setMinValue(-5.0);
+    sigma.setMaxValue(25.0);
+    rho.setMaxValue(50.0);
+    beta.setMaxValue(5.0);
     sigma.setValue(10.0);
     rho.setValue(28.0);
     beta.setValue(8.0/3.0);
+}
+
+- (void)windowDidLoad
+{
+    NSSize aspectRatio;
+    aspectRatio.width = 1038;
+    aspectRatio.height = 400;
+    [self.window setContentAspectRatio:aspectRatio];
     
-    [self.plotViewController addSeed]->transform.position = Vector3(1, 1, 1);
-    [self.plotViewController addSeed]->transform.position = Vector3(3, 4, 5);
+    [self.openGLView addSeed]->transform.position = Vector3(1, 1, 1);
+    [self.openGLView addSeed]->transform.position = Vector3(3, 4, 5);
     
-    [self.plotViewController enumerateSeedsWithBlock:^(Seed *seed) {
+    [self.openGLView enumerateSeedsWithBlock:^(Seed *seed) {
         [self updateSeed:seed];
     }];
     
     double delayInSeconds = 0.1;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self.plotViewController viewDidResize];
+        [self.openGLView update];
+        [self.parameterView update];
     });
-}
-
-- (void)windowDidEndLiveResize:(NSNotification *)notification
-{
-    [self.plotViewController viewDidResize];
 }
 
 - (void)updateSeed:(Seed *)seed
@@ -104,21 +110,21 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     double t = 0.0;
     for (int i = 0; i < 1000; i++) {
         Vector3 op = p;
-        p = lorenzSystem->evaluate(p, t);
+        p = dynamicalSystem->evaluate(p, t);
         
         vertices[idx*6] = (GLfloat)p.x;
         vertices[idx*6+1] = (GLfloat)p.y;
         vertices[idx*6+2] = (GLfloat)p.z;
         
-        vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
-        vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
-        vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
+        vertices[idx*6+3] = (GLfloat)p.x-op.x;
+        vertices[idx*6+4] = (GLfloat)p.y-op.y;
+        vertices[idx*6+5] = (GLfloat)p.z-op.z;
         
         indices[idx] = idx;
         idx++;
         t += 0.01;
     }
-    [self.plotViewController replacePathWithID:seed->pathID
+    [self.openGLView replacePathWithID:seed->pathID
                                       vertices:vertices
                                        indices:indices
                                    vertexCount:2000
@@ -132,27 +138,51 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
 
 - (IBAction)changeParameter:(id)sender
 {
-    lorenzSystem->parameter(LORENZ_SIGMA).setValue([self.paramSliderSigma doubleValue]);
-    lorenzSystem->parameter(LORENZ_RHO).setValue([self.paramSliderRho doubleValue]);
-    lorenzSystem->parameter(LORENZ_BETA).setValue([self.paramSliderBeta doubleValue]);
+    NSSlider *slider = (NSSlider *)sender;
+    dynamicalSystem->parameter((int)slider.tag).setValue([slider doubleValue]);
     
-    [self.plotViewController enumerateSeedsWithBlock:^(Seed *seed) {
+    [self.openGLView enumerateSeedsWithBlock:^(Seed *seed) {
         [self updateSeed:seed];
     }];
     
-    [self.plotViewController redraw];
-}
-
-- (IBAction)changeZoom:(id)sender
-{
-    [self.plotViewController setZoom:[self.zoomSlider floatValue]];
-    [self changeParameter:self];
+    NSIndexSet *rowIndices = [NSIndexSet indexSetWithIndex:slider.tag];
+    NSIndexSet *colIndices = [NSIndexSet indexSet];
+    [self.sliderTableView reloadDataForRowIndexes:rowIndices columnIndexes:colIndices];
+    [self.sliderTableView reloadData];
+    [self.openGLView redraw];
 }
 
 - (IBAction)addSeed:(id)sender
 {
-    [self updateSeed:[self.plotViewController addSeed]];
-    [self.plotViewController redraw];
+    [self updateSeed:[self.openGLView addSeed]];
+    [self.openGLView redraw];
+}
+
+#pragma mark -
+#pragma mark NSTableViewDataSource
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return dynamicalSystem->parameterCount();
+}
+
+#pragma mark -
+#pragma mark NSTableViewDelegate
+
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    Parameter &parameter = dynamicalSystem->parameter((int)row);
+
+    DYParameterTableView *view = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
+    view.nameField.stringValue = [NSString stringWithUTF8String:parameter.name.c_str()];
+    [view.valueField setFloatValue:parameter.value()];
+    [view.minField setFloatValue:parameter.maxValue()];
+    [view.maxField setFloatValue:parameter.minValue()];
+    [view.slider setMaxValue:parameter.maxValue()];
+    [view.slider setMinValue:parameter.minValue()];
+    [view.slider setDoubleValue:parameter.value()];
+    view.slider.tag = row;
+    return view;
 }
 
 @end

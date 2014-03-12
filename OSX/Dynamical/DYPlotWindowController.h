@@ -7,8 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DYPlotViewController.h"
-#import "DYPlotViewControllerDelegate.h"
+#import "DYPlotView.h"
+#import "DYPlotViewDelegate.h"
 
 #include "../../dynamical/parameter.h"
 #include "../../dynamical/integrator.h"
@@ -17,25 +17,20 @@
 using namespace dynam;
 using namespace std;
 
-@interface DYPlotWindowController : NSWindowController <NSWindowDelegate, DYPlotViewControllerDelegate>
+@interface DYPlotWindowController : NSWindowController
+    <NSWindowDelegate, DYPlotViewDelegate, NSTableViewDataSource, NSTableViewDelegate>
 {
-    DynamicalSystem *lorenzSystem;
+    DynamicalSystem *dynamicalSystem;
+    NSSliderCell *sliderCell;
 }
 
-@property (nonatomic, strong) DYPlotViewController *plotViewController;
-
-@property (assign) IBOutlet NSOpenGLView *openGLView;
-
-@property (assign) IBOutlet NSSlider *paramSliderRho;
-@property (assign) IBOutlet NSSlider *paramSliderSigma;
-@property (assign) IBOutlet NSSlider *paramSliderBeta;
-
-@property (assign) IBOutlet NSSlider *zoomSlider;
+@property (assign) IBOutlet DYPlotView *openGLView;
+@property (assign) IBOutlet DYPlotView *parameterView;
+@property (assign) IBOutlet NSTableView *sliderTableView;
 
 - (void)updateSeed:(Seed *)seed;
 
 - (IBAction)changeParameter:(id)sender;
-- (IBAction)changeZoom:(id)sender;
 - (IBAction)addSeed:(id)sender;
 
 @end

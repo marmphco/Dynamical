@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B039F33A18A6E7BF00A1BA5F /* DYPlotViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B039F33918A6E7BF00A1BA5F /* DYPlotViewController.mm */; };
+		B0ACB0FF18CFE73F00C226F6 /* DYOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */; };
 		B0B5FD4F18A4AA8300B69039 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */; };
 		B0B5FD5918A4AA8300B69039 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD5718A4AA8300B69039 /* InfoPlist.strings */; };
 		B0B5FD5B18A4AA8300B69039 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD5A18A4AA8300B69039 /* main.m */; };
@@ -25,6 +25,8 @@
 		B0B5FD9818A573A000B69039 /* shaders in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD9718A573A000B69039 /* shaders */; };
 		B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */; };
 		B0B5FDA118A5C4B300B69039 /* PlotWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */; };
+		B0ED7CDD18CF8A24007FFF62 /* DYPlotView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */; };
+		B0FB1C6C18CFD551006BC2F2 /* DYParameterTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,9 +40,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B039F33818A6E7BF00A1BA5F /* DYPlotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotViewController.h; sourceTree = "<group>"; };
-		B039F33918A6E7BF00A1BA5F /* DYPlotViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotViewController.mm; sourceTree = "<group>"; };
-		B08A29C718B968EE009C9C31 /* DYPlotViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYPlotViewControllerDelegate.h; sourceTree = "<group>"; };
+		B08A29C718B968EE009C9C31 /* DYPlotViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYPlotViewDelegate.h; sourceTree = "<group>"; };
+		B0ACB0FD18CFE73F00C226F6 /* DYOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYOpenGLView.h; sourceTree = "<group>"; };
+		B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYOpenGLView.mm; sourceTree = "<group>"; };
 		B0B5FD4B18A4AA8300B69039 /* Dynamical.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dynamical.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B0B5FD5118A4AA8300B69039 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -67,6 +69,10 @@
 		B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotWindowController.h; sourceTree = "<group>"; };
 		B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotWindowController.mm; sourceTree = "<group>"; };
 		B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlotWindow.xib; sourceTree = "<group>"; };
+		B0ED7CDB18CF8A24007FFF62 /* DYPlotView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotView.h; sourceTree = "<group>"; };
+		B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotView.mm; sourceTree = "<group>"; };
+		B0FB1C6A18CFD551006BC2F2 /* DYParameterTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYParameterTableView.h; sourceTree = "<group>"; };
+		B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DYParameterTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,9 +149,13 @@
 				B0B5FD6118A4AA8300B69039 /* TPAppDelegate.mm */,
 				B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */,
 				B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */,
-				B039F33818A6E7BF00A1BA5F /* DYPlotViewController.h */,
-				B039F33918A6E7BF00A1BA5F /* DYPlotViewController.mm */,
-				B08A29C718B968EE009C9C31 /* DYPlotViewControllerDelegate.h */,
+				B0ACB0FD18CFE73F00C226F6 /* DYOpenGLView.h */,
+				B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */,
+				B0ED7CDB18CF8A24007FFF62 /* DYPlotView.h */,
+				B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */,
+				B08A29C718B968EE009C9C31 /* DYPlotViewDelegate.h */,
+				B0FB1C6A18CFD551006BC2F2 /* DYParameterTableView.h */,
+				B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */,
 				B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */,
 				B0B5FD6318A4AA8300B69039 /* MainMenu.xib */,
 				B0B5FD6618A4AA8300B69039 /* Images.xcassets */,
@@ -285,9 +295,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B039F33A18A6E7BF00A1BA5F /* DYPlotViewController.mm in Sources */,
+				B0ED7CDD18CF8A24007FFF62 /* DYPlotView.mm in Sources */,
 				B0B5FD6218A4AA8300B69039 /* TPAppDelegate.mm in Sources */,
 				B0B5FD5B18A4AA8300B69039 /* main.m in Sources */,
+				B0FB1C6C18CFD551006BC2F2 /* DYParameterTableView.m in Sources */,
+				B0ACB0FF18CFE73F00C226F6 /* DYOpenGLView.mm in Sources */,
 				B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

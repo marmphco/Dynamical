@@ -11,7 +11,7 @@
 
 class Seed;
 
-@protocol DYPlotViewControllerDelegate <NSObject>
+@protocol DYPlotViewDelegate <NSObject>
 
 - (void)objectWasPicked:(int)objectID;
 - (void)seedWasMoved:(Seed *)seed;

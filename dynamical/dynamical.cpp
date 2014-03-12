@@ -19,6 +19,10 @@ Parameter &DynamicalSystem::parameter(int id) {
     return parameters[id];
 }
 
+int DynamicalSystem::parameterCount(void) {
+    return parameters.size();
+}
+
 Vector3 DynamicalSystem::evaluate(Vector3 x, double t) {
     return integrator->evaluate(function, parameters, x, t);
 }

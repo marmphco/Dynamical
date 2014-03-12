@@ -15,6 +15,8 @@ namespace dynam {
 class Parameter {
 private:
     double _value;
+    double _minValue;
+    double _maxValue;
 
 public:
     std::string name;
@@ -23,9 +25,16 @@ public:
     Parameter(std::string name);
     Parameter(double initialValue);
     Parameter(std::string name, double initialValue);
+    Parameter(std::string name, double initialValue, double minValue, double maxValue);
+
+    void setMinValue(double newValue);
+    double minValue(void);
 
     void setValue(double newValue);
     double value(void);
+
+    void setMaxValue(double newValue);
+    double maxValue(void);
 
     friend std::ostream &operator<<(std::ostream&, dynam::Parameter&);
 };

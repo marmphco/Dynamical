@@ -8,6 +8,6 @@ out vec4 fragID;
 uniform int objectID;
 
 void main() {
-    fragColor = vec4(fVelocity, 1.0);
+    fragColor = vec4(1.0);
     fragID = vec4(objectID/255.0);
 }

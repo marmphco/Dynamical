@@ -1,13 +1,14 @@
 //
-//  DYPlotViewController.h
+//  DYPlotView.h
 //  Dynamical
 //
-//  Created by Matthew Jee on 2/8/14.
+//  Created by Matthew Jee on 3/11/14.
 //  Copyright (c) 2014 mcjee. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DYPlotViewControllerDelegate.h"
+
+#import "DYPlotViewDelegate.h"
 #include "../../renderer/shader.h"
 #include "../../renderer/texture.h"
 #include "../../renderer/scene.h"
@@ -28,12 +29,11 @@ public:
     };
 };
 
-
 /**
  A view that draws paths and allows users to pick objects
  with the mouse. It knows nothing about the dynamical systems.
  */
-@interface DYPlotViewController : NSViewController
+@interface DYPlotView : NSOpenGLView
 {
     Scene *scene;
     Shader *basicShader;
@@ -49,14 +49,14 @@ public:
     
     // For mouse handling
     NSPoint previousPointInView;
+    int selected;
 }
 
-@property (nonatomic, strong) NSOpenGLView *plotView;
-@property (nonatomic, weak) id<DYPlotViewControllerDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id<DYPlotViewDelegate> delegate;
 
-- (id)initWithView:(NSOpenGLView *)view;
++ (NSOpenGLContext *)sharedContext;
+
 - (void)redraw;
-- (void)viewDidResize;
 - (void)setZoom:(float)zoom;
 
 - (Seed *)addSeed;
@@ -68,5 +68,6 @@ public:
                   indices:(GLuint *)indices
               vertexCount:(int)vertexCount
                indexCount:(int)indexCount;
+
 
 @end
