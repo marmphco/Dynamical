@@ -11,7 +11,12 @@
 #include "DYPlotWindowController.h"
 
 @interface TPAppDelegate : NSObject <NSApplicationDelegate>
+{
+    NSMutableArray *_windowControllers;
+}
 
-@property (nonatomic, strong) DYPlotWindowController *plotWindowController;
+- (IBAction)openFile:(id)sender;
+
+- (void)createPlotWindowWithURL:(NSURL *)url;
 
 @end

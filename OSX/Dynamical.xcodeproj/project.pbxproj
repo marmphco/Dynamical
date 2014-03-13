@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B099693E18D1521100D8F055 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B099693D18D1521100D8F055 /* JavaScriptCore.framework */; };
+		B099694218D1641D00D8F055 /* DYDefinitions.mm in Sources */ = {isa = PBXBuildFile; fileRef = B099694118D1641C00D8F055 /* DYDefinitions.mm */; };
 		B0ACB0FF18CFE73F00C226F6 /* DYOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */; };
 		B0ACB10318CFFF9400C226F6 /* DYParameterSpaceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ACB10218CFFF9400C226F6 /* DYParameterSpaceView.mm */; };
 		B0B5FD4F18A4AA8300B69039 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */; };
@@ -42,6 +44,9 @@
 
 /* Begin PBXFileReference section */
 		B08A29C718B968EE009C9C31 /* DYPlotViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYPlotViewDelegate.h; sourceTree = "<group>"; };
+		B099693D18D1521100D8F055 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		B099694018D1635600D8F055 /* DYDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYDefinitions.h; sourceTree = "<group>"; };
+		B099694118D1641C00D8F055 /* DYDefinitions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYDefinitions.mm; sourceTree = "<group>"; };
 		B0ACB0FD18CFE73F00C226F6 /* DYOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYOpenGLView.h; sourceTree = "<group>"; };
 		B0ACB0FE18CFE73F00C226F6 /* DYOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYOpenGLView.mm; sourceTree = "<group>"; };
 		B0ACB10118CFFF9400C226F6 /* DYParameterSpaceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYParameterSpaceView.h; sourceTree = "<group>"; };
@@ -84,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B099693E18D1521100D8F055 /* JavaScriptCore.framework in Frameworks */,
 				B0B5FD9618A5737E00B69039 /* mjrender.a in Frameworks */,
 				B0B5FD8518A4AD5C00B69039 /* OpenGL.framework in Frameworks */,
 				B0B5FD4F18A4AA8300B69039 /* Cocoa.framework in Frameworks */,
@@ -103,6 +109,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B099693F18D1631D00D8F055 /* C/C++ */ = {
+			isa = PBXGroup;
+			children = (
+				B099694018D1635600D8F055 /* DYDefinitions.h */,
+				B099694118D1641C00D8F055 /* DYDefinitions.mm */,
+			);
+			name = "C/C++";
+			sourceTree = "<group>";
+		};
+		B099694318D165EF00D8F055 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				B08A29C718B968EE009C9C31 /* DYPlotViewDelegate.h */,
+				B0ACB10618D006C800C226F6 /* DYParameterSpaceViewDelegate.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		B099694418D165FB00D8F055 /* Nibs */ = {
+			isa = PBXGroup;
+			children = (
+				B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */,
+				B0B5FD6318A4AA8300B69039 /* MainMenu.xib */,
+			);
+			name = Nibs;
+			sourceTree = "<group>";
+		};
 		B0ACB10018CFFB2A00C226F6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +176,7 @@
 		B0B5FD4D18A4AA8300B69039 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B099693D18D1521100D8F055 /* JavaScriptCore.framework */,
 				B0B5FD8418A4AD5C00B69039 /* OpenGL.framework */,
 				B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */,
 				B0B5FD6D18A4AA8400B69039 /* XCTest.framework */,
@@ -164,15 +198,14 @@
 		B0B5FD5418A4AA8300B69039 /* Dynamical */ = {
 			isa = PBXGroup;
 			children = (
-				B0ACB10018CFFB2A00C226F6 /* Views */,
 				B0B5FD6018A4AA8300B69039 /* TPAppDelegate.h */,
 				B0B5FD6118A4AA8300B69039 /* TPAppDelegate.mm */,
 				B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */,
 				B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */,
-				B08A29C718B968EE009C9C31 /* DYPlotViewDelegate.h */,
-				B0ACB10618D006C800C226F6 /* DYParameterSpaceViewDelegate.h */,
-				B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */,
-				B0B5FD6318A4AA8300B69039 /* MainMenu.xib */,
+				B099694418D165FB00D8F055 /* Nibs */,
+				B099694318D165EF00D8F055 /* Protocols */,
+				B099693F18D1631D00D8F055 /* C/C++ */,
+				B0ACB10018CFFB2A00C226F6 /* Views */,
 				B0B5FD6618A4AA8300B69039 /* Images.xcassets */,
 				B0B5FD5518A4AA8300B69039 /* Supporting Files */,
 			);
@@ -311,6 +344,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0ED7CDD18CF8A24007FFF62 /* DYPlotView.mm in Sources */,
+				B099694218D1641D00D8F055 /* DYDefinitions.mm in Sources */,
 				B0B5FD6218A4AA8300B69039 /* TPAppDelegate.mm in Sources */,
 				B0B5FD5B18A4AA8300B69039 /* main.m in Sources */,
 				B0FB1C6C18CFD551006BC2F2 /* DYParameterTableView.m in Sources */,

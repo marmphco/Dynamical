@@ -9,74 +9,67 @@
 #import "DYPlotWindowController.h"
 #import "DYParameterTableView.h"
 
-enum LorenzParameter {
-    LORENZ_SIGMA,
-    LORENZ_RHO,
-    LORENZ_BETA
-};
+#include "../../dynamical/parameter.h"
+#include "../../dynamical/integrator.h"
+#include "../../dynamical/dynamical.h"
 
-enum RosslerParameter {
-    ROSSLER_A,
-    ROSSLER_B,
-    ROSSLER_C
-};
+using namespace dynam;
+using namespace std;
 
-Vector3 lorenz(ParameterList &p, Vector3 x, double t);
-Vector3 rossler(ParameterList &p, Vector3 x, double t);
-
-// test integrables in here for now
-Vector3 lorenz(ParameterList &p, Vector3 x, double) {
-    assert(p.size() == 3);
-    
-    double rho = p[LORENZ_RHO].value();
-    double sigma = p[LORENZ_SIGMA].value();
-    double beta = p[LORENZ_BETA].value();
-    
-    return Vector3(
-                   sigma*(x.y-x.x),
-                   x.x*(rho-x.z)-x.y,
-                   x.x*x.y-beta*x.z
-                   );
+@interface DYPlotWindowController ()
+{
+    DynamicalSystem *dynamicalSystem;
+    JSGlobalContextRef jsContext;
 }
 
-Vector3 rossler(ParameterList &p, Vector3 x, double) {
-    assert(p.size() == 3);
-    
-    double a = p[ROSSLER_A].value();
-    double b = p[ROSSLER_B].value();
-    double c = p[ROSSLER_C].value();
-    
-    return Vector3(
-                   -x.y-x.z,
-                   x.x+a*x.y,
-                   b+x.z*(x.x-c)
-                   );
-}
+@end
 
 @implementation DYPlotWindowController
 
-- (void)windowWillLoad
+- (id)initWithIntegrable:(Integrable)integrable parameters:(NSArray *)parameters
 {
-    EulerIntegrator *integrator = new EulerIntegrator(0.01);
+    self = [super initWithWindowNibName:@"PlotWindow"];
+    if (self) {
+        Integrator *integrator = new RK4Integrator(0.01);
+        
+        dynamicalSystem = new DynamicalSystem(integrable, integrator, (int)parameters.count);
+        
+        for (int i = 0; i < parameters.count; ++i) {
+            NSString *name = parameters[i];
+            dynamicalSystem->parameter(i).name = [name UTF8String];
+        }
+    }
+    return self;
+}
+
+- (id)initWithSourceString:(NSString *)source
+{
+    jsContext = DYJavascriptCreateContext([source UTF8String]);
+    NSArray *parameters = DYJavascriptGetParameters(jsContext);
+    self = [self initWithIntegrable:DYJavascriptGetIntegrable() parameters:parameters];
+    return self;
+}
+
+- (id)initWithContentsOfURL:(NSURL *)url
+{
+    NSError *error;
+    NSString *source = [NSString stringWithContentsOfURL:url
+                                                encoding:NSUTF8StringEncoding
+                                                   error:&error];
+    if (error) {
+        NSLog(@"%@", error);
+        return nil;
+    }
     
-    dynamicalSystem = new DynamicalSystem(lorenz, integrator, 3);
-    
-    Parameter &sigma = dynamicalSystem->parameter(LORENZ_SIGMA);
-    Parameter &rho = dynamicalSystem->parameter(LORENZ_RHO);
-    Parameter &beta = dynamicalSystem->parameter(LORENZ_BETA);
-    
-    sigma.name = "sigma";
-    rho.name = "rho";
-    beta.name = "beta";
-    sigma.setMinValue(-25.0);
-    rho.setMinValue(-50.0);
-    beta.setMinValue(-5.0);
-    sigma.setMaxValue(25.0);
-    rho.setMaxValue(50.0);
-    beta.setMaxValue(5.0);
-    sigma.setValue(10.0);
-    rho.setValue(28.0);
-    beta.setValue(8.0/3.0);
+    self = [self initWithSourceString:source];
+    return self;
+}
+
+- (void)dealloc
+{
+    if (jsContext) {
+        JSGlobalContextRelease(jsContext);
+    }
 }
 
 - (void)windowDidLoad
@@ -91,91 +84,19 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     [self.plotView enumerateSeedsWithBlock:^(Seed *seed) {
         [self updateSeed:seed];
     }];
-    
-    double delayInSeconds = 0.1;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self.plotView update];
-        [self.parameterView update];
-    });
 }
 
 - (void)updateSeed:(Seed *)seed
 {
-    /*GLfloat vertices[6000];
-    GLuint indices[1000];
-    int idx = 0;
-    Vector3 p = seed->transform.position;
-    double t = 0.0;
-    for (int i = 0; i < 1000; i++) {
-        Vector3 op = p;
-        p = dynamicalSystem->evaluate(p, t);
-        
-        vertices[idx*6] = (GLfloat)p.x;
-        vertices[idx*6+1] = (GLfloat)p.y;
-        vertices[idx*6+2] = (GLfloat)p.z;
-        
-        vertices[idx*6+3] = (GLfloat)p.x-op.x;
-        vertices[idx*6+4] = (GLfloat)p.y-op.y;
-        vertices[idx*6+5] = (GLfloat)p.z-op.z;
-        
-        indices[idx] = idx;
-        idx++;
-        t += 0.01;
-    }
-    [self.plotView replacePathWithID:seed->pathID
-                                      vertices:vertices
-                                       indices:indices
-                                   vertexCount:2000
-                                    indexCount:1000];*/
-  /*  int count = 1000;
-    int evolutions = seed->evolutionCount;
-    GLfloat vertices[count*6*evolutions];
-    GLuint indices[count*evolutions];
-    
-    Parameter &sigma = dynamicalSystem->parameter(LORENZ_SIGMA);
-    Parameter &rho = dynamicalSystem->parameter(LORENZ_RHO);
-    Parameter &beta = dynamicalSystem->parameter(LORENZ_BETA);
-    
-    int idx = 0;
-    for (int j = 0; j < evolutions; j++) {
-        Vector3 p = seed->transform.position;
-        
-        double s = j*1.0/evolutions;
-        sigma.setValue(sigma.minValue()+(sigma.maxValue()-sigma.minValue())*s);
-        rho.setValue(rho.minValue()+(rho.maxValue()-rho.minValue())*s);
-        beta.setValue(beta.minValue()+(beta.maxValue()-beta.minValue())*s);
-        
-        double t = 0.0;
-        for (int i = 0; i < count; i++) {
-            Vector3 op = p;
-            p = dynamicalSystem->evaluate(p, t);
-            
-            vertices[idx*6] = (GLfloat)p.x;
-            vertices[idx*6+1] = (GLfloat)p.y;
-            vertices[idx*6+2] = (GLfloat)p.z;
-            
-            vertices[idx*6+3] = 1.0;//(GLfloat)p.x-op.x;
-            vertices[idx*6+4] = 1.0;//(GLfloat)p.y-op.y;
-            vertices[idx*6+5] = 1.0;//(GLfloat)p.z-op.z;
-            
-            indices[idx] = idx;
-            idx++;
-            t += 0.01;
-        }
-
-    }
-    [self.plotView replacePathWithID:seed->pathID
-                            vertices:vertices
-                             indices:indices
-                         vertexCount:count*2*evolutions
-                          indexCount:count*evolutions];*/
     int count = 1000;
     int evolutions = seed->evolutionCount;
     
     Parameter &sigma = dynamicalSystem->parameter(LORENZ_SIGMA);
     Parameter &rho = dynamicalSystem->parameter(LORENZ_RHO);
     Parameter &beta = dynamicalSystem->parameter(LORENZ_BETA);
+    if (jsContext) {
+        DYJavascriptSetCurrentContext(jsContext);
+    }
     
     for (int j = 0; j < evolutions; j++) {
         

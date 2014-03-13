@@ -8,16 +8,9 @@
 
 #import "DYOpenGLView.h"
 #import "DYParameterSpaceViewDelegate.h"
+#import "DYDefinitions.h"
 
 using namespace dynam;
-
-class ParameterHandle : public Renderable {
-public:
-    ParameterHandle(Mesh *mesh, Shader *shader) :
-        Renderable(mesh, shader, GL_TRIANGLES) {
-        transform.center = Vector3(0.5, 0.5, 0.5);
-    };
-};
 
 @interface DYParameterSpaceView : DYOpenGLView
 {

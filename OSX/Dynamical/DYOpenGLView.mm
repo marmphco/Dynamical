@@ -7,15 +7,8 @@
 //
 
 #import "DYOpenGLView.h"
+#import "DYDefinitions.h"
 
-static void setupVertexAttributes(Renderable *object) {
-    GLint loc = object->shader->getAttribLocation("vPosition");
-    glEnableVertexAttribArray(loc);
-    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), 0);
-    loc = object->shader->getAttribLocation("vVelocity");
-    glEnableVertexAttribArray(loc);
-    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
-};
 
 @implementation DYOpenGLView
 

@@ -12,9 +12,42 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
-    self.plotWindowController = [[DYPlotWindowController alloc] initWithWindowNibName:@"PlotWindow"];
-    [self.plotWindowController showWindow:self];
-}
+    _windowControllers = [[NSMutableArray alloc] init];
     
+    DYPlotWindowController *controller;
+    controller = [[DYPlotWindowController alloc] initWithIntegrable:lorenz parameters:@[@"sigma", @"rho", @"beta"]];
+    [controller showWindow:self];
+    [_windowControllers addObject:controller];
+}
+
+- (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
+{
+    for (NSString *name in filenames) {
+        [self createPlotWindowWithURL:[NSURL fileURLWithPath:name]];
+    }
+}
+
+- (IBAction)openFile:(id)sender
+{
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowedFileTypes:@[@"js"]];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton) {
+            for (NSURL *url in panel.URLs) {
+                [self createPlotWindowWithURL:url];
+                [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:url];
+            }
+        }
+    }];
+}
+
+- (void)createPlotWindowWithURL:(NSURL *)url
+{
+    DYPlotWindowController *controller;
+    controller = [[DYPlotWindowController alloc] initWithContentsOfURL:url];
+    [controller showWindow:self];
+    [_windowControllers addObject:controller];
+}
+
 @end
