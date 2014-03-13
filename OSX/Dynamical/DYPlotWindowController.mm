@@ -45,7 +45,7 @@ using namespace std;
 - (id)initWithSourceString:(NSString *)source
 {
     jsContext = DYJavascriptCreateContext([source UTF8String]);
-    NSArray *parameters = DYJavascriptGetParameters(jsContext);
+    NSArray *parameters = DYJavascriptGetParameterNames(jsContext);
     self = [self initWithIntegrable:DYJavascriptGetIntegrable() parameters:parameters];
     return self;
 }
@@ -108,6 +108,10 @@ using namespace std;
         sigma.setValue(sigma.minValue()+(sigma.maxValue()-sigma.minValue())*s);
         rho.setValue(rho.minValue()+(rho.maxValue()-rho.minValue())*s);
         beta.setValue(beta.minValue()+(beta.maxValue()-beta.minValue())*s);
+        
+        if (jsContext) {
+            DYJavascriptSetupSystem(jsContext, dynamicalSystem);
+        }
         
         double t = 0.0;
         for (int i = 0; i < count; i++) {

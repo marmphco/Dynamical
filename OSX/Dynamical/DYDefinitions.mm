@@ -81,15 +81,15 @@ static JSValueRef _jsArgs[4];
 
 Vector3 _dyfunction(ParameterList &p, Vector3 x, double) {
     
-    _jsArgs[0] = JSObjectMakeArray(_jsContext, 0, NULL, NULL);
+    //_jsArgs[0] = JSObjectMakeArray(_jsContext, 0, NULL, NULL);
     _jsArgs[1] = JSValueMakeNumber(_jsContext, x.x);
     _jsArgs[2] = JSValueMakeNumber(_jsContext, x.y);
     _jsArgs[3] = JSValueMakeNumber(_jsContext, x.z);
 
-    for (unsigned i = 0; i < p.size(); ++i) {
+    /*for (unsigned i = 0; i < p.size(); ++i) {
         JSValueRef value = JSValueMakeNumber(_jsContext, p[i].value());
         JSObjectSetPropertyAtIndex(_jsContext, (JSObjectRef)_jsArgs[0], i, value, NULL);
-    }
+    }*/
     
     JSObjectRef output = (JSObjectRef)JSObjectCallAsFunction(_jsContext, _jsSystem, NULL, 4, _jsArgs, NULL);
     JSValueRef xValue = JSObjectGetPropertyAtIndex(_jsContext, output, 0, NULL);
@@ -122,7 +122,7 @@ JSGlobalContextRef DYJavascriptCreateContext(const char *src) {
     return context;
 }
 
-NSArray *DYJavascriptGetParameters(JSGlobalContextRef context)
+NSArray *DYJavascriptGetParameterNames(JSGlobalContextRef context)
 {
     JSObjectRef rootObject = JSContextGetGlobalObject(context);
 
@@ -146,6 +146,10 @@ NSArray *DYJavascriptGetParameters(JSGlobalContextRef context)
     return output;
 }
 
+Integrable DYJavascriptGetIntegrable(void) {
+    return _dyfunction;
+}
+
 void DYJavascriptSetCurrentContext(JSGlobalContextRef context) {
     _jsContext = context;
     JSObjectRef rootObject = JSContextGetGlobalObject(_jsContext);
@@ -154,7 +158,12 @@ void DYJavascriptSetCurrentContext(JSGlobalContextRef context) {
     JSStringRelease(name);
 }
 
-Integrable DYJavascriptGetIntegrable(void) {
-    return _dyfunction;
+void DYJavascriptSetupSystem(JSGlobalContextRef context, DynamicalSystem *system) {
+    _jsArgs[0] = JSObjectMakeArray(context, 0, NULL, NULL);
+    for (unsigned i = 0; i < system->parameterCount(); ++i) {
+        JSValueRef value = JSValueMakeNumber(context, system->parameter(i).value());
+        JSObjectSetPropertyAtIndex(context, (JSObjectRef)_jsArgs[0], i, value, NULL);
+    }
 }
+
 
