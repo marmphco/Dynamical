@@ -91,9 +91,6 @@ using namespace std;
     int count = 1000;
     int evolutions = seed->evolutionCount;
     
-    Parameter &sigma = dynamicalSystem->parameter(LORENZ_SIGMA);
-    Parameter &rho = dynamicalSystem->parameter(LORENZ_RHO);
-    Parameter &beta = dynamicalSystem->parameter(LORENZ_BETA);
     if (jsContext) {
         DYJavascriptSetCurrentContext(jsContext);
     }
@@ -104,10 +101,11 @@ using namespace std;
         GLuint indices[count];
         Vector3 p = seed->transform.position;
         
-        double s = j*1.0/evolutions;
-        sigma.setValue(sigma.minValue()+(sigma.maxValue()-sigma.minValue())*s);
-        rho.setValue(rho.minValue()+(rho.maxValue()-rho.minValue())*s);
-        beta.setValue(beta.minValue()+(beta.maxValue()-beta.minValue())*s);
+        double s = j*1.0/(evolutions-1.0);
+        for (int i = 0; i < dynamicalSystem->parameterCount(); ++i) {
+            Parameter &param = dynamicalSystem->parameter(i);
+            param.setValue(param.minValue()+(param.maxValue()-param.minValue())*s);
+        }
         
         if (jsContext) {
             DYJavascriptSetupSystem(jsContext, dynamicalSystem);
@@ -115,16 +113,15 @@ using namespace std;
         
         double t = 0.0;
         for (int i = 0; i < count; i++) {
-            Vector3 op = p;
             p = dynamicalSystem->evaluate(p, t);
             
             vertices[i*6] = (GLfloat)p.x;
             vertices[i*6+1] = (GLfloat)p.y;
             vertices[i*6+2] = (GLfloat)p.z;
             
-            vertices[i*6+3] = s;//(GLfloat)p.x-op.x;
-            vertices[i*6+4] = s;//(GLfloat)p.y-op.y;
-            vertices[i*6+5] = s;//(GLfloat)p.z-op.z;
+            vertices[i*6+3] = s;
+            vertices[i*6+4] = s;
+            vertices[i*6+5] = s;
             
             indices[i] = i;
             t += 0.01;
@@ -142,19 +139,42 @@ using namespace std;
     [self updateSeed:seed];
 }
 
-- (IBAction)changeParameter:(id)sender
+- (IBAction)changeParameterStart:(id)sender
 {
     NSSlider *slider = (NSSlider *)sender;
-    dynamicalSystem->parameter((int)slider.tag).setValue([slider doubleValue]);
+    dynamicalSystem->parameter((int)slider.tag).setMinValue([slider doubleValue]);
     
     [self.plotView enumerateSeedsWithBlock:^(Seed *seed) {
         [self updateSeed:seed];
     }];
     
+    // dangerous with less/more parameters
+    [self.parameterView setStartValue:[slider doubleValue] forAxis:(int)slider.tag];
+    
     NSIndexSet *rowIndices = [NSIndexSet indexSetWithIndex:slider.tag];
     NSIndexSet *colIndices = [NSIndexSet indexSetWithIndex:0];
     [self.sliderTableView reloadDataForRowIndexes:rowIndices columnIndexes:colIndices];
     [self.plotView redraw];
+    [self.parameterView redraw];
+}
+
+- (IBAction)changeParameterEnd:(id)sender
+{
+    NSSlider *slider = (NSSlider *)sender;
+    dynamicalSystem->parameter((int)slider.tag).setMaxValue([slider doubleValue]);
+    
+    [self.plotView enumerateSeedsWithBlock:^(Seed *seed) {
+        [self updateSeed:seed];
+    }];
+    
+    // dangerous with less/more parameters
+    [self.parameterView setEndValue:[slider doubleValue] forAxis:(int)slider.tag];
+    
+    NSIndexSet *rowIndices = [NSIndexSet indexSetWithIndex:slider.tag];
+    NSIndexSet *colIndices = [NSIndexSet indexSetWithIndex:0];
+    [self.sliderTableView reloadDataForRowIndexes:rowIndices columnIndexes:colIndices];
+    [self.plotView redraw];
+    [self.parameterView redraw];
 }
 
 - (IBAction)addSeed:(id)sender
@@ -174,12 +194,10 @@ using namespace std;
 
 - (void)parameterSpaceViewBoundsDidChange:(DYParameterSpaceView *)view
 {
-    dynamicalSystem->parameter(0).setMinValue([view minValueForAxis:0]);
-    dynamicalSystem->parameter(0).setMaxValue([view maxValueForAxis:0]);
-    dynamicalSystem->parameter(1).setMinValue([view minValueForAxis:1]);
-    dynamicalSystem->parameter(1).setMaxValue([view maxValueForAxis:1]);
-    dynamicalSystem->parameter(2).setMinValue([view minValueForAxis:2]);
-    dynamicalSystem->parameter(2).setMaxValue([view maxValueForAxis:2]);
+    for (int i = 0; i < dynamicalSystem->parameterCount(); ++i) {
+        dynamicalSystem->parameter(i).setMinValue([view minValueForAxis:i]);
+        dynamicalSystem->parameter(i).setMaxValue([view maxValueForAxis:i]);
+    }
     [self.sliderTableView reloadData];
     [self.plotView enumerateSeedsWithBlock:^(Seed *seed) {
         [self updateSeed:seed];
@@ -204,14 +222,16 @@ using namespace std;
 
     DYParameterTableView *view = [tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
     view.nameField.stringValue = [NSString stringWithUTF8String:parameter.name.c_str()];
-    [view.valueField setFloatValue:parameter.value()];
     [view.minField setFloatValue:parameter.minValue()];
     [view.maxField setFloatValue:parameter.maxValue()];
-    [view.slider setMaxValue:parameter.maxValue()];
-    [view.slider setMinValue:parameter.minValue()];
-    [view.slider setDoubleValue:parameter.value()];
-    view.slider.tag = row;
+    view.maxField.tag = row;
+    view.minField.tag = row;
     return view;
+}
+
+- (BOOL)validateProposedFirstResponder:(NSResponder *)responder forEvent:(NSEvent *)event
+{
+    return YES;
 }
 
 @end

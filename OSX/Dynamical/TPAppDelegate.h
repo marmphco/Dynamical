@@ -19,4 +19,6 @@
 
 - (void)createPlotWindowWithURL:(NSURL *)url;
 
+- (void)plotWindowWillClose:(NSNotification *)notification;
+
 @end

@@ -24,26 +24,37 @@ Parameter::Parameter(std::string name, double initialValue, double minValue, dou
 
 void Parameter::setValue(double newValue) {
     _value = newValue;
-    if (_value > _maxValue) {
+    /*if (_value > _maxValue) {
         _value = _maxValue;
     }
     else if (_value < _minValue) {
         _value = _minValue;
-    }
+    }*/
 }
 
 double Parameter::value() {
     return _value;
 }
 
+void Parameter::setNormalizedValue(double normValue) {
+    if (normValue < 0) normValue = 0;
+    if (normValue > 1) normValue = 1;
+    _value = _minValue+(_maxValue-_minValue)*normValue;
+}
+
+double Parameter::normalizedValue() {
+    return (_value-_minValue)/(_maxValue-_minValue);
+}
+
 void Parameter::setMinValue(double newValue) {
-    if (newValue > _maxValue) {
+    /*if (newValue > _maxValue) {
         newValue = _maxValue;
     }
     _minValue = newValue;
     if (_value < _minValue) {
         _value = _minValue;
-    }
+    }*/
+    _minValue = newValue;
 }
 
 double Parameter::minValue() {
@@ -51,13 +62,14 @@ double Parameter::minValue() {
 }
 
 void Parameter::setMaxValue(double newValue) {
-    if (newValue < _minValue) {
+    /*if (newValue < _minValue) {
         newValue = _minValue;
     }
     _maxValue = newValue;
     if (_value > _maxValue) {
         _value = _maxValue;
-    }
+    }*/
+    _maxValue = newValue;
 }
 
 double Parameter::maxValue() {

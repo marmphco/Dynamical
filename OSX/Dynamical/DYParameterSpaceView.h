@@ -16,11 +16,15 @@ using namespace dynam;
 {
     Mesh *handleMesh;
     Mesh *pathMesh;
-    ParameterHandle *minHandle;
-    ParameterHandle *maxHandle;
+    Renderable *minHandle;
+    Renderable *maxHandle;
+    Renderable *path;
 }
 
 @property (nonatomic, weak) IBOutlet id<DYParameterSpaceViewDelegate> delegate;
+
+- (void)setStartValue:(double)value forAxis:(int)axis;
+- (void)setEndValue:(double)value  forAxis:(int)axis;
 
 - (double)minValueForAxis:(int)axis; //should be enum
 - (double)maxValueForAxis:(int)axis; //should be enum

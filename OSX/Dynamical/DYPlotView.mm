@@ -13,7 +13,7 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    cubeMesh = loadCube(1.0, 1.0, 1.0);
+    cubeMesh = DYMakePointMesh();
 
 }
 
@@ -77,7 +77,7 @@
 {
     [self.openGLContext setView:self];
     Renderable *path = scene->getObject(pathID);
-    path->mesh->modifyData((GLfloat *)vertices, indices, vertexCount, indexCount, 3);
+    path->mesh->modifyData(vertices, indices, vertexCount, indexCount, 3);
 }
 
 - (void)renderableWasSelected:(Renderable *)renderable

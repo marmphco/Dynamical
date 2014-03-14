@@ -26,7 +26,8 @@
 
 - (void)updateSeed:(Seed *)seed;
 
-- (IBAction)changeParameter:(id)sender;
+- (IBAction)changeParameterStart:(id)sender;
+- (IBAction)changeParameterEnd:(id)sender;
 - (IBAction)addSeed:(id)sender;
 - (IBAction)removeSeed:(id)sender;
 

@@ -27,11 +27,14 @@ public:
     Parameter(std::string name, double initialValue);
     Parameter(std::string name, double initialValue, double minValue, double maxValue);
 
-    void setMinValue(double newValue);
-    double minValue(void);
-
     void setValue(double newValue);
     double value(void);
+
+    void setNormalizedValue(double normValue);
+    double normalizedValue();
+
+    void setMinValue(double newValue);
+    double minValue(void);
 
     void setMaxValue(double newValue);
     double maxValue(void);

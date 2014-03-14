@@ -17,41 +17,22 @@ void setupVertexAttributes(Renderable *object) {
     glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
 };
 
-Mesh *loadCube(float width, float height, float depth) {
-    float vertexData[] = {
-        0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
-        width, 0.0, 0.0, 1.0, 1.0, 1.0,
-        width, height, 0.0, 1.0, 1.0, 1.0,
-        0.0, height, 0.0, 1.0, 1.0, 1.0,
-        
-        0.0, 0.0, depth, 1.0, 1.0, 1.0,
-        width, 0.0, depth, 1.0, 1.0, 1.0,
-        width, height, depth, 1.0, 1.0, 1.0,
-        0.0, height, depth, 1.0, 1.0, 1.0
-    };
-    GLuint indexData[] = {
-        0, 3, 1,
-        3, 2, 1,
-        1, 2, 5,
-        2, 6, 5,
-        0, 7, 3,
-        0, 4, 7,
-        3, 7, 2,
-        7, 6, 2,
-        4, 5, 7,
-        7, 5, 6,
-        0, 1, 4,
-        1, 5, 4,
-    };
-    return new Mesh(vertexData, indexData, 16, 36, 3);
+void setupPointSpriteUniforms(Renderable *object) {
+    glPointSize(10.0);
+}
+
+Mesh *DYMakePointMesh(void) {
+    GLfloat vertexData[] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    GLuint indexData[] = {0};
+    return new Mesh(vertexData, indexData, 1, 1, 6);
 }
 
 Vector3 lorenz(ParameterList &p, Vector3 x, double) {
     assert(p.size() == 3);
     
-    double rho = p[LORENZ_RHO].value();
-    double sigma = p[LORENZ_SIGMA].value();
-    double beta = p[LORENZ_BETA].value();
+    double rho = p[0].value();
+    double sigma = p[1].value();
+    double beta = p[2].value();
     
     return Vector3(
         sigma*(x.y-x.x),
@@ -63,9 +44,9 @@ Vector3 lorenz(ParameterList &p, Vector3 x, double) {
 Vector3 rossler(ParameterList &p, Vector3 x, double) {
     assert(p.size() == 3);
     
-    double a = p[ROSSLER_A].value();
-    double b = p[ROSSLER_B].value();
-    double c = p[ROSSLER_C].value();
+    double a = p[0].value();
+    double b = p[1].value();
+    double c = p[2].value();
     
     return Vector3(
         -x.y-x.z,
@@ -81,15 +62,9 @@ static JSValueRef _jsArgs[4];
 
 Vector3 _dyfunction(ParameterList &p, Vector3 x, double) {
     
-    //_jsArgs[0] = JSObjectMakeArray(_jsContext, 0, NULL, NULL);
     _jsArgs[1] = JSValueMakeNumber(_jsContext, x.x);
     _jsArgs[2] = JSValueMakeNumber(_jsContext, x.y);
     _jsArgs[3] = JSValueMakeNumber(_jsContext, x.z);
-
-    /*for (unsigned i = 0; i < p.size(); ++i) {
-        JSValueRef value = JSValueMakeNumber(_jsContext, p[i].value());
-        JSObjectSetPropertyAtIndex(_jsContext, (JSObjectRef)_jsArgs[0], i, value, NULL);
-    }*/
     
     JSObjectRef output = (JSObjectRef)JSObjectCallAsFunction(_jsContext, _jsSystem, NULL, 4, _jsArgs, NULL);
     JSValueRef xValue = JSObjectGetPropertyAtIndex(_jsContext, output, 0, NULL);
@@ -122,8 +97,7 @@ JSGlobalContextRef DYJavascriptCreateContext(const char *src) {
     return context;
 }
 
-NSArray *DYJavascriptGetParameterNames(JSGlobalContextRef context)
-{
+NSArray *DYJavascriptGetParameterNames(JSGlobalContextRef context) {
     JSObjectRef rootObject = JSContextGetGlobalObject(context);
 
     JSStringRef parameterName = JSStringCreateWithUTF8CString("parameters");

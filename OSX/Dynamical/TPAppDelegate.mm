@@ -18,6 +18,11 @@
     controller = [[DYPlotWindowController alloc] initWithIntegrable:lorenz parameters:@[@"sigma", @"rho", @"beta"]];
     [controller showWindow:self];
     [_windowControllers addObject:controller];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(plotWindowWillClose:)
+                                                 name:NSWindowWillCloseNotification
+                                               object:controller.window];
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
@@ -48,6 +53,21 @@
     controller = [[DYPlotWindowController alloc] initWithContentsOfURL:url];
     [controller showWindow:self];
     [_windowControllers addObject:controller];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(plotWindowWillClose:)
+                                                 name:NSWindowWillCloseNotification
+                                               object:controller.window];
+}
+
+- (void)plotWindowWillClose:(NSNotification *)note
+{
+    [_windowControllers removeObjectAtIndex:[_windowControllers indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [obj window] == [note object];
+    }]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSWindowWillCloseNotification
+                                                  object:[note object]];
 }
 
 @end

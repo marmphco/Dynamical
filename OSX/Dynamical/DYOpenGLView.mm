@@ -31,11 +31,24 @@
     return context;
 }
 
+- (void)dealloc
+{
+    delete scene;
+    delete flatColorShader;
+    delete velocityColorShader;
+    delete pickShader;
+    delete displayShader;
+    delete axes;
+    delete axesMesh;
+    delete displayTexture;
+    delete pickTexture;
+}
+
 - (void)awakeFromNib
 {
     [self setOpenGLContext:[DYOpenGLView sharedContext]];
     
-    NSLog(@"%s", glGetString(GL_VERSION));
+    NSLog(@"Using Context: %s", glGetString(GL_VERSION));
     
     glEnable(GL_DEPTH_TEST);
     

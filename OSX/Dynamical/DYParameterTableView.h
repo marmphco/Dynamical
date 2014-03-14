@@ -10,10 +10,11 @@
 
 @interface DYParameterTableView : NSView
 
-@property (assign) IBOutlet NSSlider *slider;
+//@property (assign) IBOutlet NSSlider *slider;
 @property (assign) IBOutlet NSTextField *nameField;
-@property (assign) IBOutlet NSTextField *valueField;
 @property (assign) IBOutlet NSTextField *minField;
 @property (assign) IBOutlet NSTextField *maxField;
+@property (assign) IBOutlet NSSlider *startSlider;
+@property (assign) IBOutlet NSSlider *endSlider;
 
 @end
