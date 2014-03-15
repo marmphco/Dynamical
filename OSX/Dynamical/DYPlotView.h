@@ -36,7 +36,8 @@ using namespace dynam;
                  vertices:(GLfloat *)vertices
                   indices:(GLuint *)indices
               vertexCount:(int)vertexCount
-               indexCount:(int)indexCount;
+               indexCount:(int)indexCount
+                   sValue:(float)sValue;
 
 
 @end

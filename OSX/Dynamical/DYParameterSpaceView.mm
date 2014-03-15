@@ -22,6 +22,7 @@
     
     handleMesh = DYMakePointMesh();
     pathMesh = DYMakePointMesh();
+    axesConnectorMesh = DYMakePointMesh();
     
     minHandle = new Renderable(handleMesh, pickShader, GL_POINTS);
     minHandle->setupVertexAttributes = setupVertexAttributes;
@@ -36,9 +37,15 @@
     path->setupVertexAttributes = setupVertexAttributes;
     path->init();
     
+    axesConnectors = new Renderable(axesConnectorMesh, flatColorShader, GL_LINES);
+    axesConnectors->setupVertexAttributes = setupVertexAttributes;
+    axesConnectors->init();
+    
+    scene->add(path);
+    scene->add(axesConnectors);
     scene->add(minHandle);
     scene->add(maxHandle);
-    scene->add(path);
+
 }
 
 - (void)dealloc
@@ -48,6 +55,7 @@
     delete minHandle;
     delete maxHandle;
     delete path;
+    delete axesConnectors;
 }
 
 - (void)updatePath
@@ -64,6 +72,52 @@
     };
     GLuint indexData[] = {0, 1};
     pathMesh->modifyData(vertexData, indexData, 2, 2, 6);
+    
+    GLfloat connectorVertexData[] = {
+        //handle 1 position
+        (GLfloat)minHandle->transform.position.x,
+        (GLfloat)minHandle->transform.position.y,
+        (GLfloat)minHandle->transform.position.z,
+        1.0, 1.0, 1.0,
+        // handle 1 x
+        0.0,
+        (GLfloat)minHandle->transform.position.y,
+        (GLfloat)minHandle->transform.position.z,
+        1.0, 1.0, 1.0,
+        // handle 1 y
+        (GLfloat)minHandle->transform.position.x,
+        0.0,
+        (GLfloat)minHandle->transform.position.z,
+        1.0, 1.0, 1.0,
+        // handle 1 z
+        (GLfloat)minHandle->transform.position.x,
+        (GLfloat)minHandle->transform.position.y,
+        0.0,
+        1.0, 1.0, 1.0,
+        //handle 2 position
+        (GLfloat)maxHandle->transform.position.x,
+        (GLfloat)maxHandle->transform.position.y,
+        (GLfloat)maxHandle->transform.position.z,
+        1.0, 1.0, 1.0,
+        // handle 2 x
+        0.0,
+        (GLfloat)maxHandle->transform.position.y,
+        (GLfloat)maxHandle->transform.position.z,
+        1.0, 1.0, 1.0,
+        // handle 2 y
+        (GLfloat)maxHandle->transform.position.x,
+        0.0,
+        (GLfloat)maxHandle->transform.position.z,
+        1.0, 1.0, 1.0,
+        // handle 2 z
+        (GLfloat)maxHandle->transform.position.x,
+        (GLfloat)maxHandle->transform.position.y,
+        0.0,
+        1.0, 1.0, 1.0,
+    };
+    GLuint connectorIndexData[] = {0, 1, 0, 2, 0, 3, 4, 5, 4, 6, 4, 7};
+    axesConnectorMesh->modifyData(connectorVertexData, connectorIndexData, 2, 2, 6);
+    axesConnectorMesh->modifyData(connectorVertexData, connectorIndexData, 8, 12, 6);
 }
 
 - (void)renderable:(Renderable *)renderable draggedFromPoint:(NSPoint)origin toPoint:(NSPoint)destination

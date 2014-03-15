@@ -16,9 +16,11 @@ using namespace dynam;
 {
     Mesh *handleMesh;
     Mesh *pathMesh;
+    Mesh *axesConnectorMesh;
     Renderable *minHandle;
     Renderable *maxHandle;
     Renderable *path;
+    Renderable *axesConnectors;
 }
 
 @property (nonatomic, weak) IBOutlet id<DYParameterSpaceViewDelegate> delegate;

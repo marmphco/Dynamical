@@ -77,9 +77,11 @@
                   indices:(GLuint *)indices
               vertexCount:(int)vertexCount
                indexCount:(int)indexCount
+                   sValue:(float)sValue
 {
     [self.openGLContext setView:self];
-    Renderable *path = scene->getObject(pathID);
+    Path *path = (Path *)scene->getObject(pathID);
+    path->s = sValue;
     path->mesh->modifyData(vertices, indices, vertexCount, indexCount, 6);
 }
 

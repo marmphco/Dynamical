@@ -125,6 +125,12 @@ using namespace std;
     if (_title) {
         [self.window setTitle:_title];
     }
+    
+    // hack to get window to do initial draw
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.plotView update];
+        [self.parameterView update];
+    });
 }
 
 #pragma mark -
@@ -134,7 +140,6 @@ using namespace std;
 {
     int count = _pathStepLength/_integrator->step();
     int evolutions = seed->evolutionCount;
-    int evolutionStep = evolutions/_evolutionCount;
     
     if (jsContext) {
         DYJavascriptSetCurrentContext(jsContext);
@@ -148,7 +153,8 @@ using namespace std;
                                 vertices:vertices
                                  indices:indices
                              vertexCount:1
-                              indexCount:1];
+                              indexCount:1
+                                  sValue:0.0];
     }
     
     for (int j = 0; j < _evolutionCount; j++) {
@@ -157,7 +163,7 @@ using namespace std;
         GLuint indices[count];
         Vector3 p = seed->transform.position;
         
-        double s = j*evolutionStep*1.0/(evolutions-1.0);
+        double s = j*1.0/(_evolutionCount-1.0);
         for (int i = 0; i < dynamicalSystem->parameterCount(); ++i) {
             Parameter &param = dynamicalSystem->parameter(i);
             param.setValue(param.minValue()+(param.maxValue()-param.minValue())*s);
@@ -183,11 +189,12 @@ using namespace std;
             indices[i] = i;
             t += 0.01;
         }
-        [self.plotView replacePathWithID:seed->pathIDs[j*evolutionStep]
+        [self.plotView replacePathWithID:seed->pathIDs[j]
                                 vertices:vertices
                                  indices:indices
                              vertexCount:count
-                              indexCount:count];
+                              indexCount:count
+                                  sValue:s];
     }
 }
 
