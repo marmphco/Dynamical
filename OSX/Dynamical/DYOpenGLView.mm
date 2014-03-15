@@ -35,7 +35,7 @@
 {
     delete scene;
     delete flatColorShader;
-    delete velocityColorShader;
+    delete pathShader;
     delete pickShader;
     delete displayShader;
     delete axes;
@@ -52,20 +52,23 @@
     
     glEnable(GL_DEPTH_TEST);
     
-    velocityColorShader = new Shader();
+    pathShader = new Shader();
     pickShader = new Shader();
     displayShader = new Shader();
     flatColorShader = new Shader();
+    colorRampShader = new Shader();
     try {
         NSBundle *bundle = [NSBundle mainBundle];
-        velocityColorShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
-                             [[bundle pathForResource:@"shaders/color_ramp" ofType:@"fsh"] UTF8String]);
+        pathShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
+                             [[bundle pathForResource:@"shaders/path" ofType:@"fsh"] UTF8String]);
         pickShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
                             [[bundle pathForResource:@"shaders/white_pick" ofType:@"fsh"] UTF8String]);
         displayShader->compile([[bundle pathForResource:@"shaders/display" ofType:@"vsh"] UTF8String],
                                [[bundle pathForResource:@"shaders/display" ofType:@"fsh"] UTF8String]);
         flatColorShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
                                  [[bundle pathForResource:@"shaders/color_flat" ofType:@"fsh"] UTF8String]);
+        colorRampShader->compile([[bundle pathForResource:@"shaders/basic" ofType:@"vsh"] UTF8String],
+                                 [[bundle pathForResource:@"shaders/color_ramp" ofType:@"fsh"] UTF8String]);
     } catch(exception &e) {
         cout << e.what() << endl;
     }
@@ -118,6 +121,7 @@
     [self.openGLContext setView:self];
     int width = self.frame.size.width;
     int height = self.frame.size.height;
+    float aspectRatio = width*1.0/height;
     // recreate framebuffer
     displayTexture = new Texture2D(GL_RGBA, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, width, height);
     displayTexture->interpolation(GL_LINEAR);
@@ -142,6 +146,8 @@
     
     delete scene->framebuffer;
     scene->framebuffer = framebuffer;
+    
+    scene->camera.perspective(-1.0f*aspectRatio, 1.0f*aspectRatio, -1.0f, 1.0f, 2.0f, 60.0f);
     
     [self redraw];
 }
@@ -170,9 +176,11 @@
     previousPointInView = [self convertPoint:point fromView:theEvent.window.contentView];
     int selectedID = scene->pickObjectID(previousPointInView.x, previousPointInView.y);
     if (selectedID != -1) {
+        [self renderableWasDeselected:selected];
         selected = scene->getObject(selectedID);
         [self renderableWasSelected:selected];
     } else {
+        [self renderableWasDeselected:selected];
         selected = NULL;
     }
 }
@@ -213,6 +221,11 @@
     
 }
 
+- (void)renderableWasDeselected:(dynam::Renderable *)renderable
+{
+    
+}
+
 - (void)renderable:(Renderable *)renderable draggedFromPoint:(NSPoint)origin toPoint:(NSPoint)destination
 {
     Matrix4 viewMatrix = scene->camera.viewMatrix()*scene->transform.matrix();
@@ -221,12 +234,16 @@
     Vector3 viewXAxis = viewRotation * X_AXIS;
     Vector3 viewYAxis = viewRotation * Y_AXIS;
     
+    int width = self.frame.size.width;
+    int height = self.frame.size.height;
+    float aspectRatio = width*1.0/height;
+    
     //the depth of the object plane in view space
     float n = 2.0;
     float f = (viewMatrix*(renderable->transform.position+renderable->transform.center)).z;
-    float worldx = (destination.x*2.0/self.frame.size.width-1.0)*f/n;
+    float worldx = (destination.x*2.0/self.frame.size.width-1.0)*f/n*aspectRatio;
     float worldy = (destination.y*2.0/self.frame.size.height-1.0)*f/n;
-    float worldlastx = (origin.x*2.0/self.frame.size.width-1.0)*f/n;
+    float worldlastx = (origin.x*2.0/self.frame.size.width-1.0)*f/n*aspectRatio;
     float worldlasty = (origin.y*2.0/self.frame.size.height-1.0)*f/n;
     float worldxDiff = worldx-worldlastx;
     float worldyDiff = worldy-worldlasty;

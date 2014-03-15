@@ -19,6 +19,7 @@ protected:
 public:
     Integrator(double step);
     virtual Vector3 evaluate(Integrable f, ParameterList &p, Vector3 x, double t) = 0;
+    virtual ~Integrator();
 
     double step(void);
     void setStep(double newStep);
@@ -27,12 +28,14 @@ public:
 class RK4Integrator : public Integrator {
 public:
     RK4Integrator(double step);
+    virtual ~RK4Integrator();
     virtual Vector3 evaluate(Integrable f, ParameterList &p, Vector3 x, double t);
 };
 
 class EulerIntegrator : public Integrator {
 public:
     EulerIntegrator(double step);
+    virtual ~EulerIntegrator();
     virtual Vector3 evaluate(Integrable f, ParameterList &p, Vector3 x, double t);
 };
 

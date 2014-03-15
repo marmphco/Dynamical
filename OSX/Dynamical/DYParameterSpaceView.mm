@@ -32,7 +32,7 @@
     maxHandle->setupUniforms = setupPointSpriteUniforms;
     maxHandle->init();
     
-    path = new Renderable(pathMesh, velocityColorShader, GL_LINES);
+    path = new Renderable(pathMesh, colorRampShader, GL_LINES);
     path->setupVertexAttributes = setupVertexAttributes;
     path->init();
     

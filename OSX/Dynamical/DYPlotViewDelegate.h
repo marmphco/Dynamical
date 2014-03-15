@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #include "../../renderer/renderable.h"
+#include "DYDefinitions.h"
 
-class Seed;
+@class DYPlotView;
 
 @protocol DYPlotViewDelegate <NSObject>
 
-- (void)objectWasPicked:(int)objectID;
-- (void)seedWasMoved:(Seed *)seed;
+- (void)plotView:(DYPlotView *)plotView seedWasSelected:(int)objectID;
+- (void)plotView:(DYPlotView *)plotView seedWasDeselected:(int)objectID;
+- (void)plotView:(DYPlotView *)plotView seedWasMoved:(Seed *)seed;
 
 @end

@@ -18,7 +18,8 @@ using namespace dynam;
 {
     Scene *scene;
     Shader *flatColorShader;
-    Shader *velocityColorShader;
+    Shader *colorRampShader;
+    Shader *pathShader;
     Shader *pickShader;
     Shader *displayShader;
     Renderable *axes;
@@ -36,8 +37,8 @@ using namespace dynam;
 + (NSOpenGLContext *)sharedContext;
 - (void)redraw;
 
-- (void)objectDragged:(NSPoint)pointInView;
 - (void)renderableWasSelected:(Renderable *)renderable;
+- (void)renderableWasDeselected:(Renderable *)renderable;
 - (void)renderable:(Renderable *)renderable draggedFromPoint:(NSPoint)origin toPoint:(NSPoint)destination;
 
 @end

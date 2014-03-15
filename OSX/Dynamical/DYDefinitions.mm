@@ -19,6 +19,26 @@ void setupVertexAttributes(Renderable *object) {
 
 void setupPointSpriteUniforms(Renderable *object) {
     glPointSize(10.0);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+}
+
+void setupSeedUniforms(Renderable *object) {
+    Seed *seed = (Seed *)object;
+    if (seed->selected) {
+        glPointSize(20.0);
+    } else {
+        glPointSize(10.0);
+    }
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+}
+
+void setupPathUniforms(Renderable *object) {
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    Path *path = (Path *)object;
+    path->shader->setUniform1f("evolution", path->s);
 }
 
 Mesh *DYMakePointMesh(void) {

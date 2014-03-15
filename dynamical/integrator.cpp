@@ -15,6 +15,10 @@ Integrator::Integrator(double step) : h(step), half_h(step/2) {}
 RK4Integrator::RK4Integrator(double step) : Integrator(step) {}
 EulerIntegrator::EulerIntegrator(double step) : Integrator(step) {}
 
+Integrator::~Integrator() {}
+RK4Integrator::~RK4Integrator() {}
+EulerIntegrator::~EulerIntegrator() {}
+
 Vector3 EulerIntegrator::evaluate(Integrable f,
                           ParameterList &p,
                           Vector3 x,
