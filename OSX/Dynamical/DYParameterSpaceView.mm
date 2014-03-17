@@ -35,10 +35,12 @@
     
     path = new Renderable(pathMesh, colorRampShader, GL_LINES);
     path->setupVertexAttributes = setupVertexAttributes;
+    path->setupUniforms = setupSimpleUniforms;
     path->init();
     
     axesConnectors = new Renderable(axesConnectorMesh, flatColorShader, GL_LINES);
     axesConnectors->setupVertexAttributes = setupVertexAttributes;
+    axesConnectors->setupUniforms = setupSimpleUniforms;
     axesConnectors->init();
     
     scene->add(path);

@@ -41,6 +41,11 @@ void setupPathUniforms(Renderable *object) {
     path->shader->setUniform1f("evolution", path->s);
 }
 
+void setupSimpleUniforms(Renderable *object) {
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+}
+
 Mesh *DYMakePointMesh(void) {
     GLfloat vertexData[] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     GLuint indexData[] = {0};

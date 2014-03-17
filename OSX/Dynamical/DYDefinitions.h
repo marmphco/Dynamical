@@ -30,6 +30,7 @@ void setupVertexAttributes(Renderable *object);
 void setupPointSpriteUniforms(Renderable *object);
 void setupSeedUniforms(Renderable *object);
 void setupPathUniforms(Renderable *object);
+void setupSimpleUniforms(Renderable *object);
 
 class Seed : public Renderable {
 public:

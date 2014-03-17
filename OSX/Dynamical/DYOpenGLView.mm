@@ -106,6 +106,7 @@
     axesMesh = new Mesh(axesVertices, axesIndices, 12, 6, 3);
     axes = new Renderable(axesMesh, flatColorShader, GL_LINES);
     axes->setupVertexAttributes = setupVertexAttributes;
+    axes->setupUniforms = setupSimpleUniforms;
     axes->init();
         
     scene = new Scene(framebuffer);

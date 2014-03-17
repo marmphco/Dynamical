@@ -173,6 +173,8 @@ using namespace std;
             DYJavascriptSetupSystem(jsContext, dynamicalSystem);
         }
         
+        double divergence = 0.0;
+        
         double t = 0.0;
         Vector3 op = p;
         for (int i = 0; i < count; i++) {
@@ -186,9 +188,15 @@ using namespace std;
             vertices[i*6+4] = p.y-op.y;
             vertices[i*6+5] = p.z-op.z;
             
+            Vector3 unit = p.normalized();
+            
+            //divergence += (p.x-op.x)*unit.x+(p.y-op.y)*unit.y+(p.z-op.z)*unit.z;
+            divergence += p.length()-op.length();
+            
             indices[i] = i;
             t += 0.01;
         }
+        NSLog(@"divergence%d: %f", j, divergence);
         [self.plotView replacePathWithID:seed->pathIDs[j]
                                 vertices:vertices
                                  indices:indices
