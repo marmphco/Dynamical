@@ -18,16 +18,14 @@
 		B0B5FD6218A4AA8300B69039 /* TPAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD6118A4AA8300B69039 /* TPAppDelegate.mm */; };
 		B0B5FD6518A4AA8300B69039 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD6318A4AA8300B69039 /* MainMenu.xib */; };
 		B0B5FD6718A4AA8300B69039 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD6618A4AA8300B69039 /* Images.xcassets */; };
-		B0B5FD6E18A4AA8400B69039 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD6D18A4AA8400B69039 /* XCTest.framework */; };
 		B0B5FD6F18A4AA8400B69039 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */; };
-		B0B5FD7718A4AA8400B69039 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD7518A4AA8400B69039 /* InfoPlist.strings */; };
-		B0B5FD7918A4AA8400B69039 /* DynamicalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD7818A4AA8400B69039 /* DynamicalTests.m */; };
 		B0B5FD8518A4AD5C00B69039 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD8418A4AD5C00B69039 /* OpenGL.framework */; };
 		B0B5FD9418A5737300B69039 /* dynamical.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD9318A5737300B69039 /* dynamical.a */; };
 		B0B5FD9618A5737E00B69039 /* mjrender.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B5FD9518A5737E00B69039 /* mjrender.a */; };
 		B0B5FD9818A573A000B69039 /* shaders in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD9718A573A000B69039 /* shaders */; };
 		B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */; };
 		B0B5FDA118A5C4B300B69039 /* PlotWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */; };
+		B0EA816C18D7E7BF00BB5864 /* DYJavascriptEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0EA816B18D7E7BF00BB5864 /* DYJavascriptEngine.mm */; };
 		B0ED7CDD18CF8A24007FFF62 /* DYPlotView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */; };
 		B0FB1C6C18CFD551006BC2F2 /* DYParameterTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */; };
 /* End PBXBuildFile section */
@@ -67,10 +65,6 @@
 		B0B5FD6418A4AA8300B69039 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		B0B5FD6618A4AA8300B69039 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B0B5FD6C18A4AA8400B69039 /* DynamicalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DynamicalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0B5FD6D18A4AA8400B69039 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		B0B5FD7418A4AA8400B69039 /* DynamicalTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DynamicalTests-Info.plist"; sourceTree = "<group>"; };
-		B0B5FD7618A4AA8400B69039 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		B0B5FD7818A4AA8400B69039 /* DynamicalTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DynamicalTests.m; sourceTree = "<group>"; };
 		B0B5FD8418A4AD5C00B69039 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		B0B5FD9318A5737300B69039 /* dynamical.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = dynamical.a; path = ../dynamical/dynamical.a; sourceTree = "<group>"; };
 		B0B5FD9518A5737E00B69039 /* mjrender.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = mjrender.a; path = ../renderer/mjrender.a; sourceTree = "<group>"; };
@@ -78,6 +72,8 @@
 		B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotWindowController.h; sourceTree = "<group>"; };
 		B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotWindowController.mm; sourceTree = "<group>"; };
 		B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlotWindow.xib; sourceTree = "<group>"; };
+		B0EA816A18D7E7BF00BB5864 /* DYJavascriptEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYJavascriptEngine.h; sourceTree = "<group>"; };
+		B0EA816B18D7E7BF00BB5864 /* DYJavascriptEngine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYJavascriptEngine.mm; sourceTree = "<group>"; };
 		B0ED7CDB18CF8A24007FFF62 /* DYPlotView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotView.h; sourceTree = "<group>"; };
 		B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotView.mm; sourceTree = "<group>"; };
 		B0FB1C6A18CFD551006BC2F2 /* DYParameterTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYParameterTableView.h; sourceTree = "<group>"; };
@@ -102,7 +98,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0B5FD6F18A4AA8400B69039 /* Cocoa.framework in Frameworks */,
-				B0B5FD6E18A4AA8400B69039 /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,6 +142,8 @@
 				B0ACB10218CFFF9400C226F6 /* DYParameterSpaceView.mm */,
 				B0FB1C6A18CFD551006BC2F2 /* DYParameterTableView.h */,
 				B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */,
+				B0EA816A18D7E7BF00BB5864 /* DYJavascriptEngine.h */,
+				B0EA816B18D7E7BF00BB5864 /* DYJavascriptEngine.mm */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -158,7 +155,6 @@
 				B0B5FD9318A5737300B69039 /* dynamical.a */,
 				B0B5FD9518A5737E00B69039 /* mjrender.a */,
 				B0B5FD5418A4AA8300B69039 /* Dynamical */,
-				B0B5FD7218A4AA8400B69039 /* DynamicalTests */,
 				B0B5FD4D18A4AA8300B69039 /* Frameworks */,
 				B0B5FD4C18A4AA8300B69039 /* Products */,
 			);
@@ -179,7 +175,6 @@
 				B099693D18D1521100D8F055 /* JavaScriptCore.framework */,
 				B0B5FD8418A4AD5C00B69039 /* OpenGL.framework */,
 				B0B5FD4E18A4AA8300B69039 /* Cocoa.framework */,
-				B0B5FD6D18A4AA8400B69039 /* XCTest.framework */,
 				B0B5FD5018A4AA8300B69039 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -220,24 +215,6 @@
 				B0B5FD5A18A4AA8300B69039 /* main.m */,
 				B0B5FD5C18A4AA8300B69039 /* Dynamical-Prefix.pch */,
 				B0B5FD5D18A4AA8300B69039 /* Credits.rtf */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		B0B5FD7218A4AA8400B69039 /* DynamicalTests */ = {
-			isa = PBXGroup;
-			children = (
-				B0B5FD7818A4AA8400B69039 /* DynamicalTests.m */,
-				B0B5FD7318A4AA8400B69039 /* Supporting Files */,
-			);
-			path = DynamicalTests;
-			sourceTree = "<group>";
-		};
-		B0B5FD7318A4AA8400B69039 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				B0B5FD7418A4AA8400B69039 /* DynamicalTests-Info.plist */,
-				B0B5FD7518A4AA8400B69039 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -332,7 +309,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0B5FD7718A4AA8400B69039 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,6 +327,7 @@
 				B0ACB0FF18CFE73F00C226F6 /* DYOpenGLView.mm in Sources */,
 				B0ACB10318CFFF9400C226F6 /* DYParameterSpaceView.mm in Sources */,
 				B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */,
+				B0EA816C18D7E7BF00BB5864 /* DYJavascriptEngine.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,7 +335,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0B5FD7918A4AA8400B69039 /* DynamicalTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,14 +371,6 @@
 				B0B5FD6418A4AA8300B69039 /* Base */,
 			);
 			name = MainMenu.xib;
-			sourceTree = "<group>";
-		};
-		B0B5FD7518A4AA8400B69039 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B0B5FD7618A4AA8400B69039 /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -65,7 +65,7 @@ Mesh *DYMakePointMesh(void);
 
 Vector3 lorenz(ParameterList &p, Vector3 x, double t);
 Vector3 rossler(ParameterList &p, Vector3 x, double t);
-
+/*
 // For Javascript Custom System Definitions
 
 // Create a new context for evaluating an evolution function
@@ -85,5 +85,5 @@ void DYJavascriptSetCurrentContext(JSGlobalContextRef context);
 // Sets the parameter array argument so that it does not
 // need to happen every evaluation.
 void DYJavascriptSetupSystem(JSGlobalContextRef context, DynamicalSystem *system);
-
+*/
 #endif

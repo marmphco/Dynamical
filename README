@@ -1,2 +1,58 @@
-This is the README for the final project!
+Visualizing Dynamical Systems
+Matthew Jee
+mcjee@ucsc.edu
 
+Platform:
+    The primary application requires Mac OS X. It has been tested
+    on OS X 10.9.2. The dynamical systems and rendering libraries
+    should compile on any Unix-based OS that supports OpenGL (with
+    a few minor source changes).
+
+Build Requirements:
+    Building requires that Xcode and the Command Line Developer tools
+    be installed. Just installing gcc or clang alone isn't be enough,
+    the Makefile requires that xcodebuild be present.
+
+Building and Running:
+    To build, simply run `make` in the root project directory. This
+    will build both the libraries and the main application. The
+    application bundle, Dynamical.app, will be copied to the root
+    of the project directory. If that doesn't occur, it can be
+    found in OSX/build/Release/.
+
+    If the the project does not build, a pre-compiled binary is
+    already present in the root directory in archived form as
+    Dynamical.tar.gz.
+
+Files and Stuff:
+    
+    dynamical/
+        Contains the source for the dynamical systems library
+
+    renderer/
+        Contains the source for the rendering engine
+
+    OSX/
+        Contains the source for the GUI application
+
+    shaders/
+        Contains the GLSL shader source
+
+    report/
+        Contains the writeup (writeup.pdf) and the online report
+
+    screenshots/
+        Contains screenshots and a video of the application
+
+    examples/
+        Contains some example Javascript files that can be opened
+        with Dynamical.app
+
+    thumb.jpg
+        The required thumbnail
+
+    Dynamical.tar.gz
+        An archive of the application executable.
+
+    source.tar.gz
+        An archive of just the soruce code

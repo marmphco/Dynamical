@@ -16,13 +16,15 @@
     
     DYPlotWindowController *controller;
     controller = [[DYPlotWindowController alloc] initWithIntegrable:lorenz parameters:@[@"rho", @"sigma", @"beta"]];
-    [controller showWindow:self];
-    [_windowControllers addObject:controller];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(plotWindowWillClose:)
-                                                 name:NSWindowWillCloseNotification
-                                               object:controller.window];
+    if (controller) {
+        [controller showWindow:self];
+        [_windowControllers addObject:controller];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(plotWindowWillClose:)
+                                                     name:NSWindowWillCloseNotification
+                                                   object:controller.window];
+    }
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames

@@ -8,6 +8,7 @@
 
 #import "DYPlotWindowController.h"
 #import "DYParameterTableView.h"
+#import "DYJavascriptEngine.h"
 
 #include "../../dynamical/parameter.h"
 #include "../../dynamical/integrator.h"
@@ -22,7 +23,7 @@ using namespace std;
     Integrator *_integrator;
     NSInteger _pathStepLength;
     NSInteger _evolutionCount;
-    JSGlobalContextRef jsContext;
+    DYJavascriptEngine *jsEngine;
     
     NSString *_title;
     
@@ -64,9 +65,19 @@ using namespace std;
 
 - (id)initWithSourceString:(NSString *)source
 {
-    jsContext = DYJavascriptCreateContext([source UTF8String]);
-    NSArray *parameters = DYJavascriptGetParameterNames(jsContext);
-    self = [self initWithIntegrable:DYJavascriptGetIntegrable() parameters:parameters];
+    NSError *error;
+    jsEngine = [[DYJavascriptEngine alloc] initWithSourceString:source error:&error];
+    if (error) {
+        [[NSAlert alertWithError:error] runModal];
+        return nil;
+    }
+    
+    NSArray *parameters = [jsEngine parameterNamesOrError:&error];
+    if (error) {
+        [[NSAlert alertWithError:error] runModal];
+        return nil;
+    }
+    self = [self initWithIntegrable:[DYJavascriptEngine integrable] parameters:parameters];
     return self;
 }
 
@@ -77,7 +88,7 @@ using namespace std;
                                                 encoding:NSUTF8StringEncoding
                                                    error:&error];
     if (error) {
-        NSLog(@"%@", error);
+        [[NSAlert alertWithError:error] runModal];
         return nil;
     }
     
@@ -93,9 +104,6 @@ using namespace std;
 {
     delete _integrator;
     delete dynamicalSystem;
-    if (jsContext) {
-        JSGlobalContextRelease(jsContext);
-    }
 }
 
 #pragma mark -
@@ -140,9 +148,13 @@ using namespace std;
 {
     int count = _pathStepLength/_integrator->step();
     int evolutions = seed->evolutionCount;
-    
-    if (jsContext) {
-        DYJavascriptSetCurrentContext(jsContext);
+    NSError *error;
+
+    if (jsEngine) {
+        [jsEngine makeCurrentEngineOrError:&error];
+        if (error) {
+            [[NSAlert alertWithError:error] runModal];
+        }
     }
     
     // A NECESSARY EVIL (because of the dumb way that paths are stored
@@ -169,11 +181,12 @@ using namespace std;
             param.setValue(param.minValue()+(param.maxValue()-param.minValue())*s);
         }
         
-        if (jsContext) {
-            DYJavascriptSetupSystem(jsContext, dynamicalSystem);
+        if (jsEngine) {
+            [jsEngine prepareToEvaluateSystem:dynamicalSystem error:&error];
+            if (error) {
+                [[NSAlert alertWithError:error] runModal];
+            }
         }
-        
-        double divergence = 0.0;
         
         double t = 0.0;
         Vector3 op = p;
@@ -188,15 +201,9 @@ using namespace std;
             vertices[i*6+4] = p.y-op.y;
             vertices[i*6+5] = p.z-op.z;
             
-            Vector3 unit = p.normalized();
-            
-            //divergence += (p.x-op.x)*unit.x+(p.y-op.y)*unit.y+(p.z-op.z)*unit.z;
-            divergence += p.length()-op.length();
-            
             indices[i] = i;
             t += 0.01;
         }
-        NSLog(@"divergence%d: %f", j, divergence);
         [self.plotView replacePathWithID:seed->pathIDs[j]
                                 vertices:vertices
                                  indices:indices
