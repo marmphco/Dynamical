@@ -158,6 +158,7 @@ using namespace std;
     }
     
     // A NECESSARY EVIL (because of the dumb way that paths are stored
+    // replace all of the paths with degenerate paths
     for (int i = 0; i < evolutions; i++) {
         GLfloat vertices[] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         GLuint indices[] = {0};
@@ -169,6 +170,7 @@ using namespace std;
                                   sValue:0.0];
     }
     
+    // generate new paths
     for (int j = 0; j < _evolutionCount; j++) {
         
         GLfloat vertices[count*6];
