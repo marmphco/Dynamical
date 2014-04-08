@@ -17,6 +17,17 @@ void setupVertexAttributes(Renderable *object) {
     glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
 };
 
+void setupVertexAttributesDistribution(Renderable *object) {
+    GLint loc = object->shader->getAttribLocation("vPosition");
+    glEnableVertexAttribArray(loc);
+    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
+}
+
+void setupUniformsDistribution(Renderable *object) {
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+}
+
 void setupPointSpriteUniforms(Renderable *object) {
     glPointSize(10.0);
     glDisable(GL_DEPTH_TEST);

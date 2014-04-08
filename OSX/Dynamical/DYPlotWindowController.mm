@@ -28,6 +28,9 @@ using namespace std;
     NSString *_title;
     
     int _axisToParameterMapping[3];
+    
+    int _distributionCircleCount;
+    GLfloat *_distributionCircles;
 }
 
 @end
@@ -149,6 +152,13 @@ using namespace std;
     int count = _pathStepLength/_integrator->step();
     int evolutions = seed->evolutionCount;
     NSError *error;
+    
+    if (_distributionCircles != NULL) {
+        free(_distributionCircles);
+        _distributionCircles = NULL;
+    }
+    _distributionCircles = (GLfloat *)calloc(count*3, sizeof(GLfloat));
+    _distributionCircleCount = count;
 
     if (jsEngine) {
         [jsEngine makeCurrentEngineOrError:&error];
@@ -169,6 +179,11 @@ using namespace std;
                               indexCount:1
                                   sValue:0.0];
     }
+    
+    // create bins to store all of the points in each distribution
+    // one bin of size @_evolutionCount for each of the @count integration steps
+    // which contains a single 2d point.
+    GLfloat distributionBins[count][_evolutionCount*2];
     
     // generate new paths
     for (int j = 0; j < _evolutionCount; j++) {
@@ -203,6 +218,11 @@ using namespace std;
             vertices[i*6+4] = p.y-op.y;
             vertices[i*6+5] = p.z-op.z;
             
+            // add to appropriate distribution
+            distributionBins[i][j*2] = p.x;
+            distributionBins[i][j*2+1] = p.y;
+            // end distribution stuff
+            
             indices[i] = i;
             t += 0.01;
         }
@@ -212,6 +232,32 @@ using namespace std;
                              vertexCount:count
                               indexCount:count
                                   sValue:s];
+        
+        // construct distribution array
+        for (int i = 0; i < count; i++) {
+            // find smallest circumscribing circle:
+            // find furthest points:
+            // midpoint is center of circle
+            // radius is distance/2
+            GLfloat largestDistance = 0;
+            for (int j = 0; j < _evolutionCount; j++) {
+                GLfloat x1 = distributionBins[i][j*2];
+                GLfloat y1 = distributionBins[i][j*2+1];
+                for (int k = j+1; k < _evolutionCount; k++) {
+                    GLfloat x2 = distributionBins[i][k*2];
+                    GLfloat y2 = distributionBins[i][k*2+1];
+                    GLfloat dx = x2-x1;
+                    GLfloat dy = y2-y1;
+                    GLfloat distance = sqrtf(dx*dx+dy*dy);
+                    if (distance > largestDistance) {
+                        largestDistance = distance;
+                        _distributionCircles[i*3] = (x2+x1)/2;
+                        _distributionCircles[i*3+1] = (y1+y2)/2;
+                        _distributionCircles[i*3+2] = distance/2;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -300,6 +346,11 @@ using namespace std;
         [self updateSeed:seed];
     }];
     [self.plotView redraw];
+}
+
+- (IBAction)drawDistributionCircles:(id)sender
+{
+    [self.plotView setDistributionCirclesWithCircles:_distributionCircles count:_distributionCircleCount];
 }
 
 #pragma mark -

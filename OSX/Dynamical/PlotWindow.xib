@@ -135,7 +135,7 @@
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
-                                                    <sliderCell key="dataCell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="right" sliderType="linear" id="zfk-yi-frp"/>
+                                                    <sliderCell key="dataCell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="left" sliderType="linear" id="zfk-yi-frp"/>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <customView id="pLF-OQ-cwa" customClass="DYParameterTableView">
@@ -329,7 +329,7 @@
                     <constraint firstItem="TOL-bY-ecb" firstAttribute="top" secondItem="uOZ-Ta-T4v" secondAttribute="top" id="so7-X1-sBo"/>
                 </constraints>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="DF54C44A-52AB-4077-9F8A-D07451E26EC9" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="nTG-yY-bQ6">
+            <toolbar key="toolbar" implicitIdentifier="DCD3205D-416F-4A92-AB7E-0F8429531DE1" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="nTG-yY-bQ6">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="177103D8-FB8F-4381-9A08-2C7C4E1F9623" label="Add Seed" paletteLabel="Add Seed" id="dbL-L9-JJo">
                         <nil key="toolTip"/>
@@ -365,11 +365,28 @@
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="VZk-JP-2YG"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="STl-5d-P2m"/>
+                    <toolbarItem implicitItemIdentifier="3904C02F-183D-44E8-881B-2A13614998E2" label="Draw Distribution Circles" paletteLabel="Draw Distribution Circles" id="jdY-4h-n7R">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="82" height="32"/>
+                        <size key="maxSize" width="209" height="43"/>
+                        <button key="view" verticalHuggingPriority="750" id="09X-Up-5Dy">
+                            <rect key="frame" x="0.0" y="14" width="209" height="43"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="push" title="Draw Distribution Circles" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kUg-cc-qrG">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
+                        <connections>
+                            <action selector="drawDistributionCircles:" target="-2" id="vks-tm-dUv"/>
+                        </connections>
+                    </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="dbL-L9-JJo"/>
                     <toolbarItem reference="p0S-RD-apM"/>
                     <toolbarItem reference="STl-5d-P2m"/>
+                    <toolbarItem reference="jdY-4h-n7R"/>
                 </defaultToolbarItems>
             </toolbar>
             <connections>

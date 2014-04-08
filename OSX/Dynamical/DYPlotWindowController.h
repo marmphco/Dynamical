@@ -42,4 +42,6 @@
 - (IBAction)changeEvolutions:(id)sender;
 - (IBAction)changeIntegrationStep:(id)sender;
 
+- (IBAction)drawDistributionCircles:(id)sender;
+
 @end
