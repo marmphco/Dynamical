@@ -9,6 +9,7 @@
 #import "DYPlotWindowController.h"
 #import "DYParameterTableView.h"
 #import "DYJavascriptEngine.h"
+#import "distributions.h"
 
 #include "../../dynamical/parameter.h"
 #include "../../dynamical/integrator.h"
@@ -29,8 +30,10 @@ using namespace std;
     
     int _axisToParameterMapping[3];
     
+    GLfloat *_vertices; //generated vertices
+    
     int _distributionCircleCount;
-    GLfloat *_distributionCircles;
+    DSCircle *_distributionCircles;
 }
 
 @end
@@ -152,13 +155,6 @@ using namespace std;
     int count = _pathStepLength/_integrator->step();
     int evolutions = seed->evolutionCount;
     NSError *error;
-    
-    if (_distributionCircles != NULL) {
-        free(_distributionCircles);
-        _distributionCircles = NULL;
-    }
-    _distributionCircles = (GLfloat *)calloc(count*3, sizeof(GLfloat));
-    _distributionCircleCount = count;
 
     if (jsEngine) {
         [jsEngine makeCurrentEngineOrError:&error];
@@ -180,15 +176,16 @@ using namespace std;
                                   sValue:0.0];
     }
     
-    // create bins to store all of the points in each distribution
-    // one bin of size @_evolutionCount for each of the @count integration steps
-    // which contains a single 2d point.
-    GLfloat distributionBins[count][_evolutionCount*2];
+    //create new arrays to store all generated vertices
+    if (_vertices) {
+        free(_vertices);
+        _vertices = NULL;
+    }
+    _vertices = (GLfloat *)calloc(_evolutionCount*count*6, sizeof(GLfloat));
     
     // generate new paths
     for (int j = 0; j < _evolutionCount; j++) {
         
-        GLfloat vertices[count*6];
         GLuint indices[count];
         Vector3 p = seed->transform.position;
         
@@ -210,55 +207,31 @@ using namespace std;
         for (int i = 0; i < count; i++) {
             p = dynamicalSystem->evaluate(p, t);
             
-            vertices[i*6] = (GLfloat)p.x;
-            vertices[i*6+1] = (GLfloat)p.y;
-            vertices[i*6+2] = (GLfloat)p.z;
+            _vertices[j*count*6+i*6] = (GLfloat)p.x;
+            _vertices[j*count*6+i*6+1] = (GLfloat)p.y;
+            _vertices[j*count*6+i*6+2] = (GLfloat)p.z;
             
-            vertices[i*6+3] = p.x-op.x;
-            vertices[i*6+4] = p.y-op.y;
-            vertices[i*6+5] = p.z-op.z;
-            
-            // add to appropriate distribution
-            distributionBins[i][j*2] = p.x;
-            distributionBins[i][j*2+1] = p.y;
-            // end distribution stuff
+            _vertices[j*count*6+i*6+3] = p.x-op.x;
+            _vertices[j*count*6+i*6+4] = p.y-op.y;
+            _vertices[j*count*6+i*6+5] = p.z-op.z;
             
             indices[i] = i;
             t += 0.01;
         }
         [self.plotView replacePathWithID:seed->pathIDs[j]
-                                vertices:vertices
+                                vertices:&_vertices[j*count*6]
                                  indices:indices
                              vertexCount:count
                               indexCount:count
                                   sValue:s];
-        
-        // construct distribution array
-        for (int i = 0; i < count; i++) {
-            // find smallest circumscribing circle:
-            // find furthest points:
-            // midpoint is center of circle
-            // radius is distance/2
-            GLfloat largestDistance = 0;
-            for (int j = 0; j < _evolutionCount; j++) {
-                GLfloat x1 = distributionBins[i][j*2];
-                GLfloat y1 = distributionBins[i][j*2+1];
-                for (int k = j+1; k < _evolutionCount; k++) {
-                    GLfloat x2 = distributionBins[i][k*2];
-                    GLfloat y2 = distributionBins[i][k*2+1];
-                    GLfloat dx = x2-x1;
-                    GLfloat dy = y2-y1;
-                    GLfloat distance = sqrtf(dx*dx+dy*dy);
-                    if (distance > largestDistance) {
-                        largestDistance = distance;
-                        _distributionCircles[i*3] = (x2+x1)/2;
-                        _distributionCircles[i*3+1] = (y1+y2)/2;
-                        _distributionCircles[i*3+2] = distance/2;
-                    }
-                }
-            }
-        }
     }
+    
+    if (_distributionCircles != NULL) {
+        free(_distributionCircles);
+        _distributionCircles = NULL;
+    }
+    _distributionCircles = (DSCircle *)calloc(count, sizeof(DSCircle));
+    _distributionCircleCount = DSGenerateCircles(_vertices, count, _evolutionCount, _distributionCircles);
 }
 
 - (IBAction)changeParameterMapping:(id)sender

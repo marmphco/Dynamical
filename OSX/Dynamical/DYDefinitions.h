@@ -78,5 +78,6 @@ Mesh *DYMakePointMesh(void);
 
 Vector3 lorenz(ParameterList &p, Vector3 x, double t);
 Vector3 rossler(ParameterList &p, Vector3 x, double t);
+Vector3 synthetic(ParameterList &p, Vector3 x, double t);
 
 #endif

@@ -12,6 +12,7 @@
 #import "DYPlotViewDelegate.h"
 #import "DYDefinitions.h"
 #include <list>
+#import "distributions.h"
 
 using namespace dynam;
 
@@ -27,7 +28,6 @@ using namespace dynam;
     Mesh *_distributionMesh;
     Shader *_distributionShader;
     Renderable *_distributionCircle;
-    //DistributionCircle *distributionCircle;
 }
 
 @property (nonatomic, weak) IBOutlet id<DYPlotViewDelegate> delegate;
@@ -49,6 +49,6 @@ using namespace dynam;
 
  @param circles An array of circles encoded like [x0, y0, r0, x1, y1, r1, ...]
  */
-- (void)setDistributionCirclesWithCircles:(GLfloat *)circles count:(int)count;
+- (void)setDistributionCirclesWithCircles:(DSCircle *)circles count:(int)count;
 
 @end

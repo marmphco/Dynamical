@@ -124,41 +124,17 @@
     [self.delegate plotView:self seedWasMoved:(Seed *)renderable];
 }
 
-- (void)setDistributionCirclesWithCircles:(GLfloat *)circles count:(int)count
+- (void)setDistributionCirclesWithCircles:(DSCircle *)circles count:(int)count
 {
     NSLog(@"setting distribution circles");
     int circleRes = 32;
     
-    // inefficient, should make better use of indices
-    GLfloat vertices[count*circleRes*3*3];
-    GLuint indices[count*circleRes*3];
-    for (int i = 0; i < count; i++) {
-        GLfloat x = circles[i*3];
-        GLfloat y = circles[i*3+1];
-        GLfloat r = circles[i*3+2];
-        int base = i*circleRes*3*3;
-        int indexBase = i*circleRes*3;
-        // add one triangle for each 'res'
-        for (int j = 0; j < circleRes; j++) {
-            GLfloat theta1 = j*1.0/circleRes*M_PI*2;
-            GLfloat theta2 = (j+1)*1.0/circleRes*M_PI*2;
-            
-            vertices[base+j*3*3] = x;
-            vertices[base+j*3*3+1] = y;
-            vertices[base+j*3*3+2] = 0;
-            
-            vertices[base+j*3*3+3] = x+cosf(theta1)*r;
-            vertices[base+j*3*3+4] = y+sinf(theta1)*r;
-            vertices[base+j*3*3+5] = 0;
-            
-            vertices[base+j*3*3+6] = x+cosf(theta2)*r;
-            vertices[base+j*3*3+7] = y+sinf(theta2)*r;
-            vertices[base+j*3*3+8] = 0;
-            
-            indices[indexBase+j*3] = indexBase+j*3;
-            indices[indexBase+j*3+1] = indexBase+j*3+1;
-            indices[indexBase+j*3+2] = indexBase+j*3+2;
-        }
+    GLfloat vertices[DSVertexCount(count, circleRes)*3];
+    DSGenerateVertices(circles, count, circleRes, vertices);
+    
+    GLuint indices[DSIndexCount(count, circleRes)];
+    for (int i = 0; i < count*circleRes*3; i++) {
+        indices[i] = i;
     }
     _distributionCircle->mesh->modifyData(vertices,
                                           indices,

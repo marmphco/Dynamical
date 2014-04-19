@@ -91,3 +91,11 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
     );
 }
 
+Vector3 synthetic(ParameterList &p, Vector3 x, double) {
+    assert(p.size() == 1);
+    
+    double a = p[0].value();
+    
+    return Vector3(3, (a-1)*x.y-0.1*a, 0);
+}
+

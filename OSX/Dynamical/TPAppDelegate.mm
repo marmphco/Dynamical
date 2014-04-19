@@ -15,7 +15,7 @@
     _windowControllers = [[NSMutableArray alloc] init];
     
     DYPlotWindowController *controller;
-    controller = [[DYPlotWindowController alloc] initWithIntegrable:lorenz parameters:@[@"rho", @"sigma", @"beta"]];
+    controller = [[DYPlotWindowController alloc] initWithIntegrable:synthetic parameters:@[@"a"]];
     if (controller) {
         [controller showWindow:self];
         [_windowControllers addObject:controller];

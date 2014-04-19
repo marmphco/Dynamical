@@ -25,6 +25,7 @@
 		B0B5FD9818A573A000B69039 /* shaders in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FD9718A573A000B69039 /* shaders */; };
 		B0B5FD9C18A5BF9600B69039 /* DYPlotWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */; };
 		B0B5FDA118A5C4B300B69039 /* PlotWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */; };
+		B0DA550319030E2A0025706F /* distributions.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0DA550219030E2A0025706F /* distributions.mm */; };
 		B0EA816C18D7E7BF00BB5864 /* DYJavascriptEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0EA816B18D7E7BF00BB5864 /* DYJavascriptEngine.mm */; };
 		B0ED7CDD18CF8A24007FFF62 /* DYPlotView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0ED7CDC18CF8A24007FFF62 /* DYPlotView.mm */; };
 		B0FB1C6C18CFD551006BC2F2 /* DYParameterTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FB1C6B18CFD551006BC2F2 /* DYParameterTableView.m */; };
@@ -72,6 +73,8 @@
 		B0B5FD9A18A5BF9600B69039 /* DYPlotWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotWindowController.h; sourceTree = "<group>"; };
 		B0B5FD9B18A5BF9600B69039 /* DYPlotWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYPlotWindowController.mm; sourceTree = "<group>"; };
 		B0B5FDA018A5C4B300B69039 /* PlotWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlotWindow.xib; sourceTree = "<group>"; };
+		B0DA550219030E2A0025706F /* distributions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = distributions.mm; sourceTree = "<group>"; };
+		B0DA550419030E380025706F /* distributions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = distributions.h; sourceTree = "<group>"; };
 		B0EA816A18D7E7BF00BB5864 /* DYJavascriptEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYJavascriptEngine.h; sourceTree = "<group>"; };
 		B0EA816B18D7E7BF00BB5864 /* DYJavascriptEngine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DYJavascriptEngine.mm; sourceTree = "<group>"; };
 		B0ED7CDB18CF8A24007FFF62 /* DYPlotView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DYPlotView.h; sourceTree = "<group>"; };
@@ -201,6 +204,7 @@
 				B099694318D165EF00D8F055 /* Protocols */,
 				B099693F18D1631D00D8F055 /* C/C++ */,
 				B0ACB10018CFFB2A00C226F6 /* Views */,
+				B0DA550119030DF10025706F /* Distributions */,
 				B0B5FD6618A4AA8300B69039 /* Images.xcassets */,
 				B0B5FD5518A4AA8300B69039 /* Supporting Files */,
 			);
@@ -217,6 +221,15 @@
 				B0B5FD5D18A4AA8300B69039 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B0DA550119030DF10025706F /* Distributions */ = {
+			isa = PBXGroup;
+			children = (
+				B0DA550419030E380025706F /* distributions.h */,
+				B0DA550219030E2A0025706F /* distributions.mm */,
+			);
+			name = Distributions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -322,6 +335,7 @@
 				B0ED7CDD18CF8A24007FFF62 /* DYPlotView.mm in Sources */,
 				B099694218D1641D00D8F055 /* DYDefinitions.mm in Sources */,
 				B0B5FD6218A4AA8300B69039 /* TPAppDelegate.mm in Sources */,
+				B0DA550319030E2A0025706F /* distributions.mm in Sources */,
 				B0B5FD5B18A4AA8300B69039 /* main.m in Sources */,
 				B0FB1C6C18CFD551006BC2F2 /* DYParameterTableView.m in Sources */,
 				B0ACB0FF18CFE73F00C226F6 /* DYOpenGLView.mm in Sources */,
