@@ -223,6 +223,7 @@ using namespace std;
                               indexCount:count
                                   sValue:s];
     }
+    [self drawDistributionCircles:self];
 }
 
 - (IBAction)changeParameterMapping:(id)sender
@@ -315,7 +316,7 @@ using namespace std;
 - (IBAction)drawDistributionCircles:(id)sender
 {
     vector<dst::Bin> bins = dst::binPathsByTime(_paths, _paths[0].size());
-    vector<dst::Cluster> clusters = dst::clusterDBScan(bins);
+    vector<dst::Cluster> clusters = dst::clusterDBScan(bins, 1, 2.0);
     [self.plotView displayClusters:clusters];
 }
 

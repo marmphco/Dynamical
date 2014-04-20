@@ -12,9 +12,10 @@
 
 - (void)dealloc
 {
-    free(cubeMesh);
-    free(_distributionCircle->mesh);
-    free(_distributionCircle);
+    delete cubeMesh;
+    delete _distributionCircle->mesh;
+    delete _distributionCircle;
+    delete _distributionShader;
 }
 
 - (void)awakeFromNib
@@ -126,6 +127,7 @@
 - (void)displayClusters:(vector<dst::Cluster>)clusters
 {
     scene->remove(_distributionCircleID);
+    delete _distributionCircle->mesh;
     delete _distributionCircle;
     _distributionCircle = new Renderable(dst::generateMesh(clusters, 32), _distributionShader, GL_TRIANGLES);
     _distributionCircle->setupVertexAttributes = setupVertexAttributesDistribution;

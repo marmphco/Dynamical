@@ -96,8 +96,10 @@ Vector3 synthetic(ParameterList &p, Vector3 x, double) {
     
     double a = p[0].value();
     //double y = (a-1)*x.y-0.1*a;
-    double y = a > 2 ? (-a)*0.2 : (a)*0.2;
-    
+    //double y = a > 2 ? (-a)*0.2 : (a)*0.2;
+    //double y = a > 0 ? a+x.y*0.1 : -a+x.y*0.1;
+    double y = a > 2 ? (-a)*0.2+sin(x.y)+sin(x.x) : (a)*0.2+sin(x.y)+sin(x.x);
+
     return Vector3(3, y, 0);
 }
 
