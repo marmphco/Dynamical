@@ -95,7 +95,9 @@ Vector3 synthetic(ParameterList &p, Vector3 x, double) {
     assert(p.size() == 1);
     
     double a = p[0].value();
+    //double y = (a-1)*x.y-0.1*a;
+    double y = a > 2 ? (-a)*0.2 : (a)*0.2;
     
-    return Vector3(3, (a-1)*x.y-0.1*a, 0);
+    return Vector3(3, y, 0);
 }
 

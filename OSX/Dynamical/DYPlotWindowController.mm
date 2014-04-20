@@ -30,10 +30,8 @@ using namespace std;
     
     int _axisToParameterMapping[3];
     
-    GLfloat *_vertices; //generated vertices
-    
-    int _distributionCircleCount;
-    DSCircle *_distributionCircles;
+    // for distributions
+    vector<dst::Path> _paths;
 }
 
 @end
@@ -176,16 +174,12 @@ using namespace std;
                                   sValue:0.0];
     }
     
-    //create new arrays to store all generated vertices
-    if (_vertices) {
-        free(_vertices);
-        _vertices = NULL;
-    }
-    _vertices = (GLfloat *)calloc(_evolutionCount*count*6, sizeof(GLfloat));
+    _paths = vector<dst::Path>(_evolutionCount, dst::Path(count, dst::Point()));
     
     // generate new paths
     for (int j = 0; j < _evolutionCount; j++) {
         
+        GLfloat vertices[count*6];
         GLuint indices[count];
         Vector3 p = seed->transform.position;
         
@@ -207,31 +201,28 @@ using namespace std;
         for (int i = 0; i < count; i++) {
             p = dynamicalSystem->evaluate(p, t);
             
-            _vertices[j*count*6+i*6] = (GLfloat)p.x;
-            _vertices[j*count*6+i*6+1] = (GLfloat)p.y;
-            _vertices[j*count*6+i*6+2] = (GLfloat)p.z;
+            vertices[i*6] = (GLfloat)p.x;
+            vertices[i*6+1] = (GLfloat)p.y;
+            vertices[i*6+2] = (GLfloat)p.z;
             
-            _vertices[j*count*6+i*6+3] = p.x-op.x;
-            _vertices[j*count*6+i*6+4] = p.y-op.y;
-            _vertices[j*count*6+i*6+5] = p.z-op.z;
+            vertices[i*6+3] = p.x-op.x;
+            vertices[i*6+4] = p.y-op.y;
+            vertices[i*6+5] = p.z-op.z;
+            
+            _paths[j][i].position = p;
+            _paths[j][i].time = t;
             
             indices[i] = i;
             t += 0.01;
         }
+        
         [self.plotView replacePathWithID:seed->pathIDs[j]
-                                vertices:&_vertices[j*count*6]
+                                vertices:vertices
                                  indices:indices
                              vertexCount:count
                               indexCount:count
                                   sValue:s];
     }
-    
-    if (_distributionCircles != NULL) {
-        free(_distributionCircles);
-        _distributionCircles = NULL;
-    }
-    _distributionCircles = (DSCircle *)calloc(count, sizeof(DSCircle));
-    _distributionCircleCount = DSGenerateCircles(_vertices, count, _evolutionCount, _distributionCircles);
 }
 
 - (IBAction)changeParameterMapping:(id)sender
@@ -323,7 +314,9 @@ using namespace std;
 
 - (IBAction)drawDistributionCircles:(id)sender
 {
-    [self.plotView setDistributionCirclesWithCircles:_distributionCircles count:_distributionCircleCount];
+    vector<dst::Bin> bins = dst::binPathsByTime(_paths, _paths[0].size());
+    vector<dst::Cluster> clusters = dst::clusterDBScan(bins);
+    [self.plotView displayClusters:clusters];
 }
 
 #pragma mark -

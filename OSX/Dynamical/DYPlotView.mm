@@ -13,7 +13,7 @@
 - (void)dealloc
 {
     free(cubeMesh);
-    free(_distributionMesh);
+    free(_distributionCircle->mesh);
     free(_distributionCircle);
 }
 
@@ -23,16 +23,15 @@
     scene->blendEnabled = true;
     cubeMesh = DYMakePointMesh();
 
-    _distributionMesh = DYMakePointMesh();
     _distributionShader = new Shader();
     NSBundle *bundle = [NSBundle mainBundle];
     _distributionShader->compile([[bundle pathForResource:@"shaders/distribution" ofType:@"vsh"] UTF8String],
                                  [[bundle pathForResource:@"shaders/distribution" ofType:@"fsh"] UTF8String]);
-    _distributionCircle = new Renderable(_distributionMesh, _distributionShader, GL_TRIANGLES);
+    _distributionCircle = new Renderable(DYMakePointMesh(), _distributionShader, GL_TRIANGLES);
     _distributionCircle->setupVertexAttributes = setupVertexAttributesDistribution;
     _distributionCircle->setupUniforms = setupUniformsDistribution;
     _distributionCircle->init();
-    scene->add(_distributionCircle);
+    _distributionCircleID = scene->add(_distributionCircle);
 }
 
 - (Seed *)addSeed
@@ -124,23 +123,15 @@
     [self.delegate plotView:self seedWasMoved:(Seed *)renderable];
 }
 
-- (void)setDistributionCirclesWithCircles:(DSCircle *)circles count:(int)count
+- (void)displayClusters:(vector<dst::Cluster>)clusters
 {
-    NSLog(@"setting distribution circles");
-    int circleRes = 32;
-    
-    GLfloat vertices[DSVertexCount(count, circleRes)*3];
-    DSGenerateVertices(circles, count, circleRes, vertices);
-    
-    GLuint indices[DSIndexCount(count, circleRes)];
-    for (int i = 0; i < count*circleRes*3; i++) {
-        indices[i] = i;
-    }
-    _distributionCircle->mesh->modifyData(vertices,
-                                          indices,
-                                          count*circleRes*3,
-                                          count*circleRes*3,
-                                          3);
+    scene->remove(_distributionCircleID);
+    delete _distributionCircle;
+    _distributionCircle = new Renderable(dst::generateMesh(clusters, 32), _distributionShader, GL_TRIANGLES);
+    _distributionCircle->setupVertexAttributes = setupVertexAttributesDistribution;
+    _distributionCircle->setupUniforms = setupUniformsDistribution;
+    _distributionCircle->init();
+    _distributionCircleID = scene->add(_distributionCircle);
 }
 
 @end

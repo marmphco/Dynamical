@@ -9,7 +9,6 @@
 #ifndef Dynamical_DYDefinitions_h
 #define Dynamical_DYDefinitions_h
 
-#import <JavaScriptCore/JavaScriptCore.h>
 #include "../../renderer/shader.h"
 #include "../../renderer/texture.h"
 #include "../../renderer/scene.h"
@@ -63,16 +62,6 @@ public:
         this->setupUniforms = setupPathUniforms;
     };
 };
-
-class DistributionCircle : public Renderable {
-public:
-    DistributionCircle(Mesh *mesh, Shader *shader) :
-    Renderable(mesh, shader, GL_POINTS) {
-        this->setupVertexAttributes = setupVertexAttributesDistribution;
-        this->setupUniforms = setupSimpleUniforms;
-    };
-};
-
 
 Mesh *DYMakePointMesh(void);
 

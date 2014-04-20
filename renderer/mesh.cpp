@@ -19,10 +19,10 @@ Mesh::Mesh() {
 }
 
 Mesh::Mesh(GLfloat *vertexData,
-                   GLuint *indexData,
-                   int vertexCount,
-                   int indexCounti,
-                   int vertexElements) {
+           GLuint *indexData,
+           int vertexCount,
+           int indexCounti,
+           int vertexElements) {
     indexCount = indexCounti;
     // The vertex buffer and index buffer are adjacent
     glGenBuffers(2, &vertexBufferObject);
@@ -30,10 +30,10 @@ Mesh::Mesh(GLfloat *vertexData,
 }
 
 void Mesh::modifyData(GLfloat *vertexData,
-                          GLuint *indexData,
-                          int vertexCount,
-                          int indexCounti,
-                          int vertexElements) {
+                      GLuint *indexData,
+                      int vertexCount,
+                      int indexCounti,
+                      int vertexElements) {
 
     indexCount = indexCounti;
     int vertexSize = vertexElements*vertexCount*sizeof(GLfloat);

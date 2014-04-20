@@ -6,85 +6,85 @@
 //  Copyright (c) 2014 mcjee. All rights reserved.
 //
 
-#include <stdio.h>
 #include "distributions.h"
 
-int DSIndexCount(int count, int resolution) {
-    // 3 indices per resolution per count
-    return count*resolution*3;
-}
+// real stuff starts here
 
-int DSVertexCount(int count, int resolution) {
-    // 3 vertices per resolution per count
-    return count*resolution*3;
-}
-
-void DSGenerateVertices(DSCircle *circles, int count, int resolution, float *outVertices) {
+namespace dst {
     
-    // using GL_TRIANGLES
-    // inefficient, should make better use of indices
-    for (int i = 0; i < count; i++) {
-        DSCircle *circle = &circles[i];
-        GLfloat x = circle->center.x;
-        GLfloat y = circle->center.y;
-        GLfloat r = circle->radius;
+std::vector<Bin> binPathsByTime(std::vector<Path> paths, int binCount) {
+    // doesn't do anything special yet
+    // for now binCount should be equal to paths[i].size()
+    std::vector<Bin> bins(binCount, Bin(paths.size(), dynam::Vector3()));
+    for (int binIndex = 0; binIndex < binCount; ++binIndex) {
+        for (int pathIndex = 0; pathIndex < paths.size(); ++pathIndex) {
+            Point p = paths[pathIndex][binIndex];
+            bins[binIndex][pathIndex] = dynam::Vector3(p.position.x, p.position.y, p.position.z);
+        }
+    }
+    return bins;
+}
+    
+std::vector<Cluster> clusterDBScan(std::vector<Bin> bins) {
+    std::vector<Cluster> clusters;
+    // just sticks everything in one cluster
+    for (int binIndex = 0; binIndex < bins.size(); ++binIndex) {
+        Bin bin = bins[binIndex];
+        Cluster cluster;
+        for (int i = 0; i < bin.size(); ++i) {
+            cluster.points.push_back(bin[i]);
+        }
+        cluster.radius = 0;
+        for (int i = 0; i < cluster.points.size(); ++i) {
+            for (int j = i; j < cluster.points.size(); ++j) {
+                double dist = (cluster.points[i]-cluster.points[j]).length();
+                if (dist > cluster.radius*2) {
+                    cluster.center = (cluster.points[i]+cluster.points[j])*(0.5);
+                    cluster.radius = dist/2;
+                }
+            }
+        }
+        clusters.push_back(cluster);
+    }
+    return clusters;
+}
+    
+dynam::Mesh *generateMesh(std::vector<Cluster> clusters, int resolution) {
+    int indexCount = clusters.size()*resolution*3;
+    int vertexCount = clusters.size()*resolution*3;
+    GLuint indices[indexCount];
+    GLfloat vertices[vertexCount*3];
+    
+    for (int i = 0; i < clusters.size(); i++) {
+        Cluster *cluster = &clusters[i];
+        GLfloat x = cluster->center.x;
+        GLfloat y = cluster->center.y;
+        GLfloat r = cluster->radius;
         int base = i*resolution*3*3;
         // add one triangle for each 'res'
         for (int j = 0; j < resolution; j++) {
             GLfloat theta1 = j*1.0/resolution*M_PI*2;
             GLfloat theta2 = (j+1)*1.0/resolution*M_PI*2;
             
-            outVertices[base+j*3*3] = x;
-            outVertices[base+j*3*3+1] = y;
-            outVertices[base+j*3*3+2] = 0;
+            vertices[base+j*3*3] = x;
+            vertices[base+j*3*3+1] = y;
+            vertices[base+j*3*3+2] = 0;
             
-            outVertices[base+j*3*3+3] = x+cosf(theta1)*r;
-            outVertices[base+j*3*3+4] = y+sinf(theta1)*r;
-            outVertices[base+j*3*3+5] = 0;
+            vertices[base+j*3*3+3] = x+cosf(theta1)*r;
+            vertices[base+j*3*3+4] = y+sinf(theta1)*r;
+            vertices[base+j*3*3+5] = 0;
             
-            outVertices[base+j*3*3+6] = x+cosf(theta2)*r;
-            outVertices[base+j*3*3+7] = y+sinf(theta2)*r;
-            outVertices[base+j*3*3+8] = 0;
+            vertices[base+j*3*3+6] = x+cosf(theta2)*r;
+            vertices[base+j*3*3+7] = y+sinf(theta2)*r;
+            vertices[base+j*3*3+8] = 0;
         }
     }
+    
+    for (int i = 0; i < indexCount; ++i) {
+        indices[i] = i;
+    }
+    
+    return new dynam::Mesh(vertices, indices, indexCount, vertexCount, 3);
 }
-
-int DSGenerateCircles(GLfloat *vertices, int vertexCountPerPath, int pathCount, DSCircle *outCircles) {
-    GLfloat distributionBins[vertexCountPerPath][pathCount*2];
-    for (int i = 0; i < vertexCountPerPath; i++) {
-        for (int j = 0; j < pathCount; j++) {
-            GLfloat x = vertices[j*vertexCountPerPath*6+i*6];
-            GLfloat y = vertices[j*vertexCountPerPath*6+i*6+1];
-            distributionBins[i][j*2] = x;
-            distributionBins[i][j*2+1] = y;
-        }
-    }
     
-    // construct distribution array
-    for (int i = 0; i < vertexCountPerPath; i++) {
-        // find smallest circumscribing circle:
-        // find furthest points:
-        // midpoint is center of circle
-        // distance/2 is radius
-        GLfloat largestDistance = 0;
-        for (int j = 0; j < pathCount; j++) {
-            GLfloat x1 = distributionBins[i][j*2];
-            GLfloat y1 = distributionBins[i][j*2+1];
-            for (int k = j+1; k < pathCount; k++) {
-                GLfloat x2 = distributionBins[i][k*2];
-                GLfloat y2 = distributionBins[i][k*2+1];
-                GLfloat dx = x2-x1;
-                GLfloat dy = y2-y1;
-                GLfloat distance = sqrtf(dx*dx+dy*dy);
-                if (distance > largestDistance) {
-                    largestDistance = distance;
-                    outCircles[i].center.x = (x2+x1)/2;
-                    outCircles[i].center.y = (y1+y2)/2;
-                    outCircles[i].radius = distance/2;
-                }
-            }
-        }
-    }
-    
-    return vertexCountPerPath;
 }
