@@ -35,11 +35,14 @@ typedef std::vector<Point> Path;
 typedef std::vector<dynam::Vector3> Bin;
     
 std::vector<Bin> binPathsByTime(std::vector<Path> paths, size_t binCount);
-    
-std::vector<Cluster> clusterKMeans(std::vector<Bin> bins);
-std::vector<Cluster> clusterDumb(std::vector<Bin> bins);
-std::vector<Cluster> clusterDBScan(std::vector<Bin> bins, size_t minPoints, double epsilon);
 
+// sticks everything in one cluster
+std::vector<Cluster> clusterDumb(std::vector<Bin> bins);
+// sticks each point in it's own cluster
+std::vector<Cluster> clusterSimple(std::vector<Bin> bins, double size);
+std::vector<Cluster> clusterDBScan(std::vector<Bin> bins, size_t minPoints, double epsilon);
+std::vector<Cluster> clusterOPTICS(std::vector<Bin> bins, size_t minPoints, double epsilon);
+    
 dynam::Mesh *generateMesh(std::vector<Cluster> clusters, int resolution);
 
 }

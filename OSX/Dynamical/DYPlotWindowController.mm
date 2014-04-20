@@ -31,6 +31,7 @@ using namespace std;
     int _axisToParameterMapping[3];
     
     // for distributions
+    NSInteger _clusteringMode;
     vector<dst::Path> _paths;
 }
 
@@ -313,10 +314,29 @@ using namespace std;
     [self.plotView redraw];
 }
 
+- (IBAction)changeClustering:(id)sender
+{
+    _clusteringMode = [sender indexOfSelectedItem];
+}
+
 - (IBAction)drawDistributionCircles:(id)sender
 {
     vector<dst::Bin> bins = dst::binPathsByTime(_paths, _paths[0].size());
-    vector<dst::Cluster> clusters = dst::clusterDBScan(bins, 1, 2.0);
+    vector<dst::Cluster> clusters;
+    switch (_clusteringMode) {
+        case 0:
+            clusters = dst::clusterDumb(bins);
+            break;
+        case 1:
+            clusters = dst::clusterDBScan(bins, 1, 2.0);
+            break;
+        case 2:
+            clusters = dst::clusterSimple(bins, 0.2);
+            break;
+        default:
+            clusters = dst::clusterDumb(bins);
+            break;
+    }
     [self.plotView displayClusters:clusters];
 }
 

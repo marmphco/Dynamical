@@ -49,6 +49,21 @@ std::vector<Cluster> clusterDumb(std::vector<Bin> bins) {
     return clusters;
 }
     
+std::vector<Cluster> clusterSimple(std::vector<Bin> bins, double size) {
+    std::vector<Cluster> clusters;
+    for (int binIndex = 0; binIndex < bins.size(); ++binIndex) {
+        Bin bin = bins[binIndex];
+        for (int i = 0; i < bin.size(); ++i) {
+            Cluster cluster;
+            cluster.points.push_back(bin[i]);
+            cluster.center = bin[i];
+            cluster.radius = size;
+            clusters.push_back(cluster);
+        }
+    }
+    return clusters;
+}
+    
 // returns indices of points corresponding to points in the epsilon neighborhood of p
 std::vector<int> epsilonNeighborhood(std::vector<dynam::Vector3> points, dynam::Vector3 p, double epsilon) {
     std::vector<int> neighborhood;
