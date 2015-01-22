@@ -29,6 +29,7 @@ public:
     DynamicalSystem(Integrable function, Integrator *integrator, int paramCount);
     
     Vector3 evaluate(Vector3 x, double t);
+
     Parameter &parameter(int id);
     int parameterCount(void);
 };

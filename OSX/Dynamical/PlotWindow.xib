@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5053"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DYPlotWindowController">
@@ -329,7 +329,7 @@
                     <constraint firstItem="TOL-bY-ecb" firstAttribute="top" secondItem="uOZ-Ta-T4v" secondAttribute="top" id="so7-X1-sBo"/>
                 </constraints>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="DF54C44A-52AB-4077-9F8A-D07451E26EC9" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="nTG-yY-bQ6">
+            <toolbar key="toolbar" implicitIdentifier="54A8B8DC-545E-4CC7-9264-E8B1D1114608" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="nTG-yY-bQ6">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="177103D8-FB8F-4381-9A08-2C7C4E1F9623" label="Add Seed" paletteLabel="Add Seed" id="dbL-L9-JJo">
                         <nil key="toolTip"/>
@@ -365,11 +365,52 @@
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="VZk-JP-2YG"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="STl-5d-P2m"/>
+                    <toolbarItem implicitItemIdentifier="3904C02F-183D-44E8-881B-2A13614998E2" label="Draw Distribution Circles" paletteLabel="Draw Distribution Circles" id="jdY-4h-n7R">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="82" height="32"/>
+                        <size key="maxSize" width="209" height="43"/>
+                        <button key="view" verticalHuggingPriority="750" id="09X-Up-5Dy">
+                            <rect key="frame" x="0.0" y="14" width="209" height="43"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="push" title="Draw Distribution Circles" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kUg-cc-qrG">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
+                        <connections>
+                            <action selector="drawDistributionCircles:" target="-2" id="vks-tm-dUv"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="0391BD8C-DA51-4C6E-9697-0782E0455D88" label="Rendering Method" paletteLabel="Rendering Method" id="Hr4-zB-T7L">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="100" height="28"/>
+                        <size key="maxSize" width="100" height="28"/>
+                        <popUpButton key="view" verticalHuggingPriority="750" id="9y0-sS-h9t">
+                            <rect key="frame" x="3" y="14" width="100" height="28"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <popUpButtonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9Th-GQ-Hvi">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                                <menu key="menu" title="OtherViews" id="0ua-ZF-aXO">
+                                    <items>
+                                        <menuItem title="Single Cluster" id="9NU-09-rMF"/>
+                                        <menuItem title="DBSCAN" id="XJ6-mx-FTZ"/>
+                                        <menuItem title="No Clusters" id="NmJ-Ce-cYB"/>
+                                    </items>
+                                </menu>
+                            </popUpButtonCell>
+                        </popUpButton>
+                        <connections>
+                            <action selector="changeClustering:" target="-2" id="hLg-BL-yrX"/>
+                        </connections>
+                    </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="dbL-L9-JJo"/>
                     <toolbarItem reference="p0S-RD-apM"/>
                     <toolbarItem reference="STl-5d-P2m"/>
+                    <toolbarItem reference="Hr4-zB-T7L"/>
+                    <toolbarItem reference="jdY-4h-n7R"/>
                 </defaultToolbarItems>
             </toolbar>
             <connections>

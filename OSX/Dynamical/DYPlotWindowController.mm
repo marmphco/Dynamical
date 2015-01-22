@@ -9,6 +9,7 @@
 #import "DYPlotWindowController.h"
 #import "DYParameterTableView.h"
 #import "DYJavascriptEngine.h"
+#import "distributions.h"
 
 #include "../../dynamical/parameter.h"
 #include "../../dynamical/integrator.h"
@@ -28,6 +29,10 @@ using namespace std;
     NSString *_title;
     
     int _axisToParameterMapping[3];
+    
+    // for distributions
+    NSInteger _clusteringMode;
+    vector<dst::Path> _paths;
 }
 
 @end
@@ -170,6 +175,8 @@ using namespace std;
                                   sValue:0.0];
     }
     
+    _paths = vector<dst::Path>(_evolutionCount, dst::Path(count, dst::Point()));
+    
     // generate new paths
     for (int j = 0; j < _evolutionCount; j++) {
         
@@ -203,9 +210,13 @@ using namespace std;
             vertices[i*6+4] = p.y-op.y;
             vertices[i*6+5] = p.z-op.z;
             
+            _paths[j][i].position = p;
+            _paths[j][i].time = t;
+            
             indices[i] = i;
             t += 0.01;
         }
+        
         [self.plotView replacePathWithID:seed->pathIDs[j]
                                 vertices:vertices
                                  indices:indices
@@ -213,6 +224,7 @@ using namespace std;
                               indexCount:count
                                   sValue:s];
     }
+    [self drawDistributionCircles:self];
 }
 
 - (IBAction)changeParameterMapping:(id)sender
@@ -300,6 +312,32 @@ using namespace std;
         [self updateSeed:seed];
     }];
     [self.plotView redraw];
+}
+
+- (IBAction)changeClustering:(id)sender
+{
+    _clusteringMode = [sender indexOfSelectedItem];
+}
+
+- (IBAction)drawDistributionCircles:(id)sender
+{
+    vector<dst::Bin> bins = dst::binPathsByTime(_paths, _paths[0].size());
+    vector<dst::Cluster> clusters;
+    switch (_clusteringMode) {
+        case 0:
+            clusters = dst::clusterDumb(bins);
+            break;
+        case 1:
+            clusters = dst::clusterDBScan(bins, 1, 2.0);
+            break;
+        case 2:
+            clusters = dst::clusterSimple(bins, 0.2);
+            break;
+        default:
+            clusters = dst::clusterDumb(bins);
+            break;
+    }
+    [self.plotView displayClusters:clusters];
 }
 
 #pragma mark -

@@ -12,6 +12,7 @@
 #import "DYPlotViewDelegate.h"
 #import "DYDefinitions.h"
 #include <list>
+#import "distributions.h"
 
 using namespace dynam;
 
@@ -23,6 +24,10 @@ using namespace dynam;
 {
     Mesh *cubeMesh;
     std::list<Seed *> seeds;
+    
+    Shader *_distributionShader;
+    Renderable *_distributionCircle;
+    int _distributionCircleID;
 }
 
 @property (nonatomic, weak) IBOutlet id<DYPlotViewDelegate> delegate;
@@ -38,5 +43,7 @@ using namespace dynam;
               vertexCount:(int)vertexCount
                indexCount:(int)indexCount
                    sValue:(float)sValue;
+
+- (void)displayClusters:(vector<dst::Cluster>)clusters;
 
 @end

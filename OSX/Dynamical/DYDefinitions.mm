@@ -17,6 +17,17 @@ void setupVertexAttributes(Renderable *object) {
     glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid *)(3*sizeof(GLfloat)));
 };
 
+void setupVertexAttributesDistribution(Renderable *object) {
+    GLint loc = object->shader->getAttribLocation("vPosition");
+    glEnableVertexAttribArray(loc);
+    glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), 0);
+}
+
+void setupUniformsDistribution(Renderable *object) {
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+}
+
 void setupPointSpriteUniforms(Renderable *object) {
     glPointSize(10.0);
     glDisable(GL_DEPTH_TEST);
@@ -78,5 +89,17 @@ Vector3 rossler(ParameterList &p, Vector3 x, double) {
         x.x+a*x.y,
         b+x.z*(x.x-c)
     );
+}
+
+Vector3 synthetic(ParameterList &p, Vector3 x, double) {
+    assert(p.size() == 1);
+    
+    double a = p[0].value();
+    //double y = (a-1)*x.y-0.1*a;
+    //double y = a > 2 ? (-a)*0.2 : (a)*0.2;
+    //double y = a > 0 ? a+x.y*0.1 : -a+x.y*0.1;
+    double y = a > 2 ? (-a)*0.2+sin(x.y)+sin(x.x) : (a)*0.2+sin(x.y)+sin(x.x);
+
+    return Vector3(3, y, 0);
 }
 

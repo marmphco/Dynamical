@@ -10,12 +10,29 @@
 
 @implementation DYPlotView
 
+- (void)dealloc
+{
+    delete cubeMesh;
+    delete _distributionCircle->mesh;
+    delete _distributionCircle;
+    delete _distributionShader;
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];
     scene->blendEnabled = true;
     cubeMesh = DYMakePointMesh();
 
+    _distributionShader = new Shader();
+    NSBundle *bundle = [NSBundle mainBundle];
+    _distributionShader->compile([[bundle pathForResource:@"shaders/distribution" ofType:@"vsh"] UTF8String],
+                                 [[bundle pathForResource:@"shaders/distribution" ofType:@"fsh"] UTF8String]);
+    _distributionCircle = new Renderable(DYMakePointMesh(), _distributionShader, GL_TRIANGLES);
+    _distributionCircle->setupVertexAttributes = setupVertexAttributesDistribution;
+    _distributionCircle->setupUniforms = setupUniformsDistribution;
+    _distributionCircle->init();
+    _distributionCircleID = scene->add(_distributionCircle);
 }
 
 - (Seed *)addSeed
@@ -105,6 +122,18 @@
 {
     [super renderable:renderable draggedFromPoint:origin toPoint:destination];
     [self.delegate plotView:self seedWasMoved:(Seed *)renderable];
+}
+
+- (void)displayClusters:(vector<dst::Cluster>)clusters
+{
+    scene->remove(_distributionCircleID);
+    delete _distributionCircle->mesh;
+    delete _distributionCircle;
+    _distributionCircle = new Renderable(dst::generateMesh(clusters, 32), _distributionShader, GL_TRIANGLES);
+    _distributionCircle->setupVertexAttributes = setupVertexAttributesDistribution;
+    _distributionCircle->setupUniforms = setupUniformsDistribution;
+    _distributionCircle->init();
+    _distributionCircleID = scene->add(_distributionCircle);
 }
 
 @end

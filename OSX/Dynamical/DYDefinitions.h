@@ -9,7 +9,6 @@
 #ifndef Dynamical_DYDefinitions_h
 #define Dynamical_DYDefinitions_h
 
-#import <JavaScriptCore/JavaScriptCore.h>
 #include "../../renderer/shader.h"
 #include "../../renderer/texture.h"
 #include "../../renderer/scene.h"
@@ -31,6 +30,9 @@ void setupPointSpriteUniforms(Renderable *object);
 void setupSeedUniforms(Renderable *object);
 void setupPathUniforms(Renderable *object);
 void setupSimpleUniforms(Renderable *object);
+
+void setupVertexAttributesDistribution(Renderable *object);
+void setupUniformsDistribution(Renderable *object);
 
 class Seed : public Renderable {
 public:
@@ -65,25 +67,6 @@ Mesh *DYMakePointMesh(void);
 
 Vector3 lorenz(ParameterList &p, Vector3 x, double t);
 Vector3 rossler(ParameterList &p, Vector3 x, double t);
-/*
-// For Javascript Custom System Definitions
+Vector3 synthetic(ParameterList &p, Vector3 x, double t);
 
-// Create a new context for evaluating an evolution function
-JSGlobalContextRef DYJavascriptCreateContext(const char *src);
-
-// Get the parameters specified by the given context
-NSArray *DYJavascriptGetParameterNames(JSGlobalContextRef context);
-
-// Returns the shared Integrable
-Integrable DYJavascriptGetIntegrable(void);
-
-// Sets the given context to be used for evaluation in the 
-// shared integrable
-void DYJavascriptSetCurrentContext(JSGlobalContextRef context);
-
-// This exists purely for optimization purposes
-// Sets the parameter array argument so that it does not
-// need to happen every evaluation.
-void DYJavascriptSetupSystem(JSGlobalContextRef context, DynamicalSystem *system);
-*/
 #endif
